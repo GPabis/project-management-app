@@ -2,14 +2,15 @@
   "name": "project-management-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "backend/dist/index.js",
   "scripts": {
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" "
+    "dev": "concurrently \"cd backend && tsc --watch\" \"cd backend && npm run start:dev\" \"cd frontend && npm start\" "
   },
   "keywords": [],
   "author": "Grzegorz Pabiś",
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^6.2.0"
-  }
+  },
+  "dependencies": {}
 }
