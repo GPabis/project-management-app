@@ -1,0 +1,64 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2020, // Allows for the parsing of modern ECMAScript features
+        "sourceType": "module", // Allows for the use of imports
+        "ecmaFeatures": {
+            "jsx": true // Allows for the parsing of JSX
+        }
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "rules": {
+        "prettier/prettier": ["warn", { "endOfLine": "auto" }],
+        "getter-return": "error",
+        "no-empty": ["error", { "allowEmptyCatch": true }],
+        "eqeqeq": ["error", "always", { "null": "ignore" }],
+        "no-multi-spaces": "error",
+        "@typescript-eslint/no-unused-vars": "warn",
+        "comma-dangle": [
+            "error",
+            {
+                "arrays": "only-multiline",
+                "objects": "only-multiline",
+                "imports": "only-multiline",
+                "exports": "only-multiline",
+                "functions": "only-multiline"
+            }
+        ],
+        "eol-last": ["warn", "always"],
+        "max-depth": ["error", 4],
+        "arrow-parens": ["error", "always"],
+        "no-duplicate-imports": "error",
+        "no-var": "error",
+        "no-cond-assign": "error",
+        "no-constant-condition": "error",
+        "no-dupe-args": "error",
+        "no-dupe-else-if": "error",
+        "no-duplicate-case": "error",
+        "no-ex-assign": "error",
+        "no-extra-boolean-cast": "error",
+        "no-extra-semi": "error",
+        "no-global-assign": "error",
+        "@typescript-eslint/no-shadow": "error",
+        "grouped-accessor-pairs": "error",
+        "max-classes-per-file": ["error", 1],
+        "max-statements-per-line": ["error", { "max": 2 }],
+        "max-params": ["error", 4],
+        "max-lines": ["error", { "max": 300, "skipBlankLines": true, "skipComments": true }],
+        "@typescript-eslint/no-explicit-any": ["error"],
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-non-null-assertion": "off"
+    }
+}
