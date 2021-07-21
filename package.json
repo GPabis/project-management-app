@@ -4,7 +4,7 @@
     "description": "",
     "main": "backend/dist/index.js",
     "scripts": {
-        "install": "sh scripts.sh install",
+        "all:install": "sh scripts.sh install",
         "dev": "concurrently \"cd backend && tsc --watch\" \"cd backend && npm run start:dev\" \"cd frontend && npm start\" ",
         "lint": "eslint \"**/*.{ts,tsx,js,jsx}\"",
         "lint:fix": "eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
@@ -27,7 +27,8 @@
         "mrm": "^3.0.5",
         "mrm-task-lint-staged": "^6.0.3",
         "prettier": "^2.3.2",
-        "pretty-quick": "^3.1.1"
+        "pretty-quick": "^3.1.1",
+        "typescript": "^4.3.5"
     },
     "lint-staged": {
         "*.{js,ts,tsx,jsx}": [
