@@ -4,6 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
+        "install": "sh scripts.sh install",
         "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\" ",
         "lint": "eslint \"**/*.{ts,tsx,js,jsx}\"",
         "lint:fix": "eslint \"**/*.{ts,tsx,js,jsx}\" --fix",
