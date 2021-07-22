@@ -1,8 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { config } from 'dotenv';
 import { Request, Response, NextFunction } from 'express';
-
-config();
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.query.token || req.headers['x-access-token'] || req.body.token;

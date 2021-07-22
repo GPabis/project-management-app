@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { secoundaryColor, tertiaryColor } from '../../utils/styleVariables';
+import { secoundaryColor, tertiaryColor } from '../../../utils/styleVariables';
 
 
-const Submit = styled.button`
+export const Submit = styled.button`
   background: #fff;
   border: 2px solid ${tertiaryColor};
   border-radius: 2rem;
@@ -17,7 +17,7 @@ const Submit = styled.button`
   transition: all 0.3s;
   text-transform: uppercase;
 
-  :hover{
+  &:hover{
     background: ${tertiaryColor};
     color: #fff;
   }

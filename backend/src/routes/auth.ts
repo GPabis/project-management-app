@@ -19,8 +19,8 @@ interface loginBody {
 }
 
 const findUserByEmail = async (email: string) => {
-    const oldUser = await User.findOne({ email });
-    return oldUser ? oldUser : false;
+    const existingUser = await User.findOne({ email });
+    return existingUser ? existingUser : false;
 };
 
 router.post('/register', async (req, res) => {
@@ -54,13 +54,19 @@ router.post('/register', async (req, res) => {
         const token = jwt.sign({ user_id: user._id, email }, tokenKey, {
             expiresIn: '2h',
         });
-        user.token = token;
 
-        res.status(201).json(user);
+        res.status(201).json({
+            ...user,
+            token
+        });
     } catch (err) {
+
         console.log(err);
+
     } finally {
+
         await mongoose.connection.close();
+
     }
 });
 
@@ -93,9 +99,13 @@ router.post('/login', async (req, res) => {
             res.status(400).send('Invalid Credentials');
         }
     } catch (err) {
+
         console.log(err);
+
     } finally {
+
         await mongoose.connection.close();
+        
     }
 });
 

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 
-const Logo = styled.a`
- a{
+const Logo = styled.p`
+ a {
    cursor: pointer;
    font-size: 2rem;
    color: #fff;   
@@ -10,7 +10,7 @@ const Logo = styled.a`
    font-weight: bold;
    transition: all 0.3s;
    text-decoration: none;
-   :hover{
+   &:hover{
      color: #ddd;
    }
  }

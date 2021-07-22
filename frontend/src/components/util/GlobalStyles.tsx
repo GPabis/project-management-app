@@ -1,5 +1,3 @@
-
-
 import { createGlobalStyle } from "styled-components";
 import LatoBlack from '../../fonts/Lato-Black.ttf';
 import LatoBlackItalic from '../../fonts/Lato-BlackItalic.ttf';

@@ -7,7 +7,7 @@ const NavElement = styled.li`
   padding: 0 1rem;
   margin: 0;
 
-  a{
+  a {
     font-size: 1.6rem;
     transition: all 0.3s;
     color: #fff;

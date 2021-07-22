@@ -20,15 +20,12 @@ const Header:FC = ({children}) => {
           </Logo>
 
           <Nav>
-
             <NavElement>
               <NavLink to='/login'>Login</NavLink>
             </NavElement>
-
             <NavElement>
               <NavLink to='/register'>Register</NavLink>
             </NavElement>
-
           </Nav>
 
         </HeaderContainer>

@@ -5,7 +5,7 @@ interface LayoutProps {
 }
 
 const ContainerLayout = styled.div<LayoutProps>`
-  background: ${props => props.background ? props.background : '#fffff'};
+  background: ${({background})=> background ? background : '#fffff'};
 `
 
 export default ContainerLayout;

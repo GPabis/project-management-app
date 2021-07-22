@@ -4,12 +4,12 @@ import { config } from 'dotenv';
 config();
 
 const { MD_HOST, MD_PORT, MD_USER, MD_PASSWORD } = process.env;
+const URL = `mongodb://${MD_USER}:${MD_PASSWORD}@${MD_HOST}:${MD_PORT}/${MD_USER}?synchronize=true`;
 
 const connect = async () => {
-    const url = `mongodb://${MD_USER}:${MD_PASSWORD}@${MD_HOST}:${MD_PORT}/${MD_USER}?synchronize=true`;
 
     await mongoose
-        .connect(url, {
+        .connect(URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,

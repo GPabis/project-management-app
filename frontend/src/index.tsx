@@ -8,8 +8,8 @@ import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
+    <GlobalStyles/>
     <BrowserRouter>
-      <GlobalStyles/>
       <App />
     </BrowserRouter>
   </React.StrictMode>,
