@@ -1,9 +1,10 @@
 import User from '../models/user.model';
-import express from 'express';
+import express, { Response, Request } from 'express';
 import connect from '../middleware/database';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import { registerUserValidationRules, loginUserValidationRules, validate } from '../middleware/validate';
 
 const router = express.Router();
 
@@ -23,12 +24,24 @@ const findUserByEmail = async (email: string) => {
     return existingUser ? existingUser : false;
 };
 
-router.post('/register', async (req, res) => {
+const sendErrorResponse = async (res: Response, message: string, status: number) => {
+    const error = {
+        errors: [
+            {
+                msg: message,
+            },
+        ],
+    };
+
+    return res.status(status).send(error);
+};
+
+router.post('/register', registerUserValidationRules(), validate, async (req: Request, res: Response) => {
     try {
         const { email, username, password }: registerBody = req.body;
 
         if (!(email && username && password)) {
-            res.status(400).send('All input is required!');
+            return await sendErrorResponse(res, 'All inputs required', 400);
         }
 
         await connect();
@@ -57,25 +70,21 @@ router.post('/register', async (req, res) => {
 
         res.status(201).json({
             ...user,
-            token
+            token,
         });
     } catch (err) {
-
-        console.log(err);
-
+        await sendErrorResponse(res, err, 500);
     } finally {
-
         await mongoose.connection.close();
-
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginUserValidationRules(), validate, async (req: Request, res: Response) => {
     try {
         const { email, password }: loginBody = req.body;
 
         if (!(email && password)) {
-            res.status(400).send('All input is required!');
+            return await sendErrorResponse(res, 'All inputs required', 400);
         }
 
         await connect();
@@ -99,13 +108,9 @@ router.post('/login', async (req, res) => {
             res.status(400).send('Invalid Credentials');
         }
     } catch (err) {
-
         console.log(err);
-
     } finally {
-
         await mongoose.connection.close();
-        
     }
 });
 
