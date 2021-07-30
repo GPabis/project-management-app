@@ -1,39 +1,36 @@
-import Container from "../util/Container";
-import { tertiaryColor } from "../../utils/styleVariables";
-import { NavLink, Link } from "react-router-dom";
-import ContainerLayout from "../util/ContainerLayout";
-import HeaderContainer from "./HeaderContainer";
-import Logo from "./Logo";
-import NavElement from "./NavElement";
-import Nav from './Nav';
-import { FC } from "react";
+import Container from '../util/Container';
+import { tertiaryColor } from '../../utils/styleVariables';
+import { Link } from 'react-router-dom';
+import ContainerLayout from '../util/ContainerLayout';
+import HeaderContainer from './HeaderContainer';
+import Logo from './Logo';
+import { FC } from 'react';
+import { useContext } from 'react';
+import AuthContext from '../../store/auth-context';
+import UserNav from './UserNav';
+import GuestNav from './GuestNav';
 
-const Header:FC = ({children}) => {
-  return (
-  <>
-    <ContainerLayout background={tertiaryColor}>
-      <Container>
-        <HeaderContainer>
+const Header: FC = ({ children }) => {
+    const authCtx = useContext(AuthContext);
 
-          <Logo>
-            <Link to='/'>Project Management</Link>
-          </Logo>
+    const menu = authCtx.isLoggedIn ? <UserNav /> : <GuestNav />;
 
-          <Nav>
-            <NavElement>
-              <NavLink to='/login'>Login</NavLink>
-            </NavElement>
-            <NavElement>
-              <NavLink to='/register'>Register</NavLink>
-            </NavElement>
-          </Nav>
+    return (
+        <>
+            <ContainerLayout background={tertiaryColor}>
+                <Container>
+                    <HeaderContainer>
+                        <Logo>
+                            <Link to="/">Project Management</Link>
+                        </Logo>
 
-        </HeaderContainer>
-      </Container>
-    </ContainerLayout>
-    {children}
-  </>
-  )
-}
+                        {menu}
+                    </HeaderContainer>
+                </Container>
+            </ContainerLayout>
+            {children}
+        </>
+    );
+};
 
 export default Header;

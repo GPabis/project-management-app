@@ -1,11 +1,17 @@
 import express from 'express';
-import authRouter from './routes/auth';
+import loginRouter from './routes/login';
+import registerRouter from './routes/register';
+import cors from 'cors';
 
 const app = express();
 
+app.use(cors());
+
 app.use(express.json());
 
-app.use(authRouter);
+app.use(loginRouter);
+
+app.use(registerRouter);
 
 const PORT = 8080;
 

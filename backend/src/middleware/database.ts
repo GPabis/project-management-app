@@ -7,7 +7,6 @@ const { MD_HOST, MD_PORT, MD_USER, MD_PASSWORD } = process.env;
 const URL = `mongodb://${MD_USER}:${MD_PASSWORD}@${MD_HOST}:${MD_PORT}/${MD_USER}?synchronize=true`;
 
 const connect = async () => {
-
     await mongoose
         .connect(URL, {
             useNewUrlParser: true,

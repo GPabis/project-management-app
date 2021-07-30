@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { tertiaryColor } from '../../../utils/styleVariables';
 
 const ErrorLabel = styled.p`
     font-size: 1.1rem;

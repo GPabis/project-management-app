@@ -20,6 +20,12 @@ export const Submit = styled.button`
         background: ${tertiaryColor};
         color: #fff;
     }
+
+    &:disabled {
+        background: #aaa;
+        color: ${secoundaryColor};
+        cursor: default;
+    }
 `;
 
 export default Submit;
