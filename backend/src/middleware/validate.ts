@@ -3,14 +3,22 @@ import { body, validationResult, ValidationError, Result } from 'express-validat
 
 export const registerUserValidationRules = () => {
     return [
-        body('email').trim().isEmail().isLength({ max: 100 }),
-        body('username').isLength({ min: 5, max: 50 }),
-        body('password').isLength({ min: 5, max: 50 }),
+        body('email').trim().isEmail().isLength({ max: 50 }),
+        body('username').trim().isString().isLength({ min: 5, max: 50 }),
+        body('password').trim().isString().isLength({ min: 5, max: 50 }),
     ];
 };
 
 export const loginUserValidationRules = () => {
-    return [body('email').trim().isEmail().isLength({ max: 100 }), body('password').isLength({ min: 5, max: 50 })];
+    return [body('email').trim().isEmail().isLength({ max: 50 }), body('password').isLength({ min: 5, max: 50 })];
+};
+
+export const createProjectValidationRules = () => {
+    return [
+        body('userEmail').trim().isEmail().isLength({ max: 50 }),
+        body('projectName').trim().isString().isLength({ max: 80, min: 3 }),
+        body('projectDescription').trim().isString().isLength({ min: 5, max: 500 }),
+    ];
 };
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {

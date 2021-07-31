@@ -2,14 +2,9 @@ import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import useInput from '../../hooks/use-input';
 import AuthContext from '../../store/auth-context';
-import { validateEmail, validatePassword } from '../../utils/validateForm';
+import { validateEmail, validatePassword, getServerErrorResponse, ErrorFromServer } from '../../utils/validateForm';
 import Container from '../util/Container';
 import { Submit, FormField, Label, Input, ErrorLabel, Form } from '../util/Form';
-
-interface ErrorFromServer {
-    error: boolean;
-    messages: string[];
-}
 
 const Login = () => {
     const [errorFromServer, setErrorFromServer] = useState<ErrorFromServer>({
@@ -62,16 +57,7 @@ const Login = () => {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                const errors = error.errors;
-                if (errors) {
-                    const errorMessages: string[] = errors.map((err: { msg: string }) => err.msg);
-                    const errorFromServer: ErrorFromServer = {
-                        error: true,
-                        messages: errorMessages,
-                    };
-                    setErrorFromServer(errorFromServer);
-                }
+                setErrorFromServer(await getServerErrorResponse(response));
             }
 
             if (response.ok) {
@@ -79,11 +65,11 @@ const Login = () => {
                 setErrorFromServer({ error: false, messages: [] });
                 authCtx.setEmailHandler(email);
                 authCtx.setUsernameHandler(username);
-                authCtx.login(token);
+                authCtx.login(token, username, email);
                 history.push('/dashboard');
             }
         } catch (err) {
-            console.log(err);
+            setErrorFromServer(err);
         }
     };
 

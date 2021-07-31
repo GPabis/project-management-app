@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import useInput from '../../hooks/use-input';
-import { validateEmail, validatePassword, validateUsername } from '../../utils/validateForm';
+import {
+    validateEmail,
+    validatePassword,
+    validateUsername,
+    getServerErrorResponse,
+    ErrorFromServer,
+} from '../../utils/validateForm';
 import Container from '../util/Container';
 import { Submit, FormField, Label, Input, ErrorLabel, Form } from '../util/Form';
-
-interface ErrorFromServer {
-    error: boolean;
-    messages: string[];
-}
 
 const Register = () => {
     const [errorFromServer, setErrorFromServer] = useState<ErrorFromServer>({
@@ -69,16 +70,7 @@ const Register = () => {
             });
 
             if (!response.ok) {
-                const error = await response.json();
-                const errors = error.errors;
-                if (errors) {
-                    const errorMessages: string[] = errors.map((err: { msg: string }) => err.msg);
-                    const errorFromServer: ErrorFromServer = {
-                        error: true,
-                        messages: errorMessages,
-                    };
-                    setErrorFromServer(errorFromServer);
-                }
+                setErrorFromServer(await getServerErrorResponse(response));
             }
 
             if (response.ok) {
@@ -86,7 +78,7 @@ const Register = () => {
                 history.push('/login');
             }
         } catch (err) {
-            console.log(err);
+            setErrorFromServer(err);
         }
     };
 
