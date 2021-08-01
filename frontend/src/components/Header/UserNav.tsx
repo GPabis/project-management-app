@@ -19,7 +19,7 @@ const UserNav = () => {
                 <NavLink to="/dashboard/create-project">Create Project</NavLink>
             </NavElement>
             <NavElement>
-                <NavLink to="/dashboard/your-projects">Your Projects</NavLink>
+                <NavLink to="/dashboard/projects">Your Projects</NavLink>
             </NavElement>
             <NavElement>
                 <button onClick={logoutHadnler}>Logout</button>

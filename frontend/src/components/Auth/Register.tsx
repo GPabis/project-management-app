@@ -1,23 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import useInput from '../../hooks/use-input';
-import {
-    validateEmail,
-    validatePassword,
-    validateUsername,
-    getServerErrorResponse,
-    ErrorFromServer,
-} from '../../utils/validateForm';
+import NotificationContext from '../../store/notification-context';
+import { validateEmail, validatePassword, validateUsername, getServerErrorResponse } from '../../utils/validateForm';
 import Container from '../util/Container';
 import { Submit, FormField, Label, Input, ErrorLabel, Form } from '../util/Form';
 
 const Register = () => {
-    const [errorFromServer, setErrorFromServer] = useState<ErrorFromServer>({
-        error: false,
-        messages: [],
-    });
-
     const history = useHistory();
+    const notificationCtx = useContext(NotificationContext);
 
     const {
         value: enteredUsername,
@@ -70,15 +61,16 @@ const Register = () => {
             });
 
             if (!response.ok) {
-                setErrorFromServer(await getServerErrorResponse(response));
+                const { error, messages } = await getServerErrorResponse(response);
+                notificationCtx.setNotification(error, messages);
             }
 
             if (response.ok) {
-                setErrorFromServer({ error: false, messages: [] });
+                notificationCtx.setNotification(false, ['You created account. You can login now!']);
                 history.push('/login');
             }
         } catch (err) {
-            setErrorFromServer(err);
+            notificationCtx.setNotification(false, [err]);
         }
     };
 
@@ -119,8 +111,6 @@ const Register = () => {
                     {passwordInputHasError && <ErrorLabel>{passwordErrorMsg}</ErrorLabel>}
                 </FormField>
                 <Submit disabled={!formIsValid}>Submit</Submit>
-                {errorFromServer.error &&
-                    errorFromServer.messages.map((message, index) => <ErrorLabel key={index}>{message}</ErrorLabel>)}
             </Form>
         </Container>
     );

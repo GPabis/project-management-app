@@ -1,12 +1,12 @@
 import express, { Request, Response } from 'express';
-import verifyToken, { findUserByEmail, sendErrorResponse, getUserFromToken } from './../middleware/auth';
+import verifyToken, { findUserByEmail, sendErrorResponse, getUserFromToken } from '../middleware/auth';
 import mongoose from 'mongoose';
-import connect from './../middleware/database';
-import Project from './../models/project.model';
+import connect from '../middleware/database';
+import Project from '../models/project.model';
 
 const route = express.Router();
 
-route.get('/your-projects', verifyToken, async (req: Request, res: Response) => {
+route.get('/projects', verifyToken, async (req: Request, res: Response) => {
     try {
         await connect();
 

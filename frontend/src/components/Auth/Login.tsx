@@ -1,19 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import useInput from '../../hooks/use-input';
 import AuthContext from '../../store/auth-context';
-import { validateEmail, validatePassword, getServerErrorResponse, ErrorFromServer } from '../../utils/validateForm';
+import NotificationContext from '../../store/notification-context';
+import { validateEmail, validatePassword, getServerErrorResponse } from '../../utils/validateForm';
 import Container from '../util/Container';
 import { Submit, FormField, Label, Input, ErrorLabel, Form } from '../util/Form';
 
 const Login = () => {
-    const [errorFromServer, setErrorFromServer] = useState<ErrorFromServer>({
-        error: false,
-        messages: [],
-    });
-
     const authCtx = useContext(AuthContext);
-
+    const notificationCtx = useContext(NotificationContext);
     const history = useHistory();
 
     const {
@@ -57,19 +53,20 @@ const Login = () => {
             });
 
             if (!response.ok) {
-                setErrorFromServer(await getServerErrorResponse(response));
+                const { error, messages } = await getServerErrorResponse(response);
+                notificationCtx.setNotification(error, messages);
             }
 
             if (response.ok) {
                 const { token, username, email } = await response.json();
-                setErrorFromServer({ error: false, messages: [] });
+                notificationCtx.setNotification(false, ['You are logged in!']);
                 authCtx.setEmailHandler(email);
                 authCtx.setUsernameHandler(username);
                 authCtx.login(token, username, email);
                 history.push('/dashboard');
             }
         } catch (err) {
-            setErrorFromServer(err);
+            notificationCtx.setNotification(true, [err]);
         }
     };
 
@@ -99,8 +96,6 @@ const Login = () => {
                     {passwordInputHasError && <ErrorLabel>{passwordErrorMsg}</ErrorLabel>}
                 </FormField>
                 <Submit disabled={!formIsValid}>Submit</Submit>
-                {errorFromServer.error &&
-                    errorFromServer.messages.map((message, index) => <ErrorLabel key={index}>{message}</ErrorLabel>)}
             </Form>
         </Container>
     );

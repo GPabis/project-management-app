@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import useInput from '../../hooks/use-input';
 import AuthContext from '../../store/auth-context';
+import NotificationContext from '../../store/notification-context';
 import {
     validateProjectName,
     validateProjectDescription,
@@ -18,13 +19,9 @@ interface CreateProjectBody {
 }
 
 const CreateProject = () => {
-    const [errorFromServer, setErrorFromServer] = useState<ErrorFromServer>({
-        error: false,
-        messages: [],
-    });
-
     const history = useHistory();
     const authCtx = useContext(AuthContext);
+    const notificationCtx = useContext(NotificationContext);
 
     const {
         value: enteredProjectName,
@@ -71,14 +68,15 @@ const CreateProject = () => {
             });
 
             if (!response.ok) {
-                setErrorFromServer(await getServerErrorResponse(response));
+                const { error, messages } = await getServerErrorResponse(response);
+                notificationCtx.setNotification(error, [...messages]);
             }
 
             const data = await response.json();
-
-            history.push(`/dashboard/your-projects/${data._id}`);
+            notificationCtx.setNotification(false, [`You create project named "${data.projectName}"`]);
+            history.push(`/dashboard/projects/${data._id}`);
         } catch (err) {
-            setErrorFromServer(err);
+            notificationCtx.setNotification(true, [err]);
         }
     };
 
@@ -108,8 +106,6 @@ const CreateProject = () => {
                     {descriptionInputHasError && <ErrorLabel>{descriptionErrorMsg}</ErrorLabel>}
                 </FormField>
                 <Submit disabled={!formIsValid}>Submit</Submit>
-                {errorFromServer.error &&
-                    errorFromServer.messages.map((message, index) => <ErrorLabel key={index}>{message}</ErrorLabel>)}
             </Form>
         </Container>
     );

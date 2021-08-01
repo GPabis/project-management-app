@@ -7,6 +7,7 @@ import { useEffect, useContext, useState } from 'react';
 import AuthContext from '../../store/auth-context';
 import { ErrorFromServer, getServerErrorResponse } from '../../utils/validateForm';
 import Paragraph from '../util/Paragraph';
+import NotificationContext from '../../store/notification-context';
 
 interface IYourProjects {
     _id: string;
@@ -14,11 +15,6 @@ interface IYourProjects {
 }
 
 const YourProjects = () => {
-    const [errorFromServer, setErrorFromServer] = useState<ErrorFromServer>({
-        error: false,
-        messages: [],
-    });
-
     const [projects, setProjects] = useState<IYourProjects[]>([]);
 
     const [noProjects, setNoProjects] = useState(false);
@@ -26,19 +22,21 @@ const YourProjects = () => {
     const [loading, setLoading] = useState(true);
 
     const authCtx = useContext(AuthContext);
+    const notificationCtx = useContext(NotificationContext);
 
     useEffect(() => {
         const getYourProjects = async () => {
             if (!authCtx.token) return authCtx.logout();
             try {
-                const response = await fetch('http://localhost:8080/your-projects', {
+                const response = await fetch('http://localhost:8080/projects', {
                     headers: {
                         'x-access-token': authCtx.token,
                         'Content-Type': 'application/json',
                     },
                 });
                 if (!response.ok) {
-                    setErrorFromServer(await getServerErrorResponse(response));
+                    const { error, messages } = await getServerErrorResponse(response);
+                    notificationCtx.setNotification(error, [...messages]);
                 }
                 const data: IYourProjects[] = await response.json();
                 if (data.length === 0) {
@@ -46,7 +44,7 @@ const YourProjects = () => {
                 }
                 setProjects(data);
             } catch (err) {
-                setErrorFromServer(err);
+                notificationCtx.setNotification(true, [err]);
             } finally {
                 setLoading(false);
             }
@@ -59,24 +57,16 @@ const YourProjects = () => {
         <>
             <SecoundaryHeadline>See your projects</SecoundaryHeadline>
             <List>
-                {errorFromServer.error &&
-                    !loading &&
-                    errorFromServer.messages.map((error) => <Paragraph center={true}>{error}</Paragraph>)}
-                {!errorFromServer.error && loading && <Paragraph center={true}>Loading...</Paragraph>}
-                {!errorFromServer.error && !loading && noProjects && (
-                    <Paragraph center={true}>You don't belong to any project</Paragraph>
-                )}
-                {!errorFromServer.error &&
-                    !noProjects &&
+                {loading && <Paragraph center={true}>Loading...</Paragraph>}
+                {!loading && noProjects && <Paragraph center={true}>You don't belong to any project</Paragraph>}
+                {!noProjects &&
                     !loading &&
                     projects.length !== 0 &&
                     projects.map((project) => {
                         return (
                             <ListElement key={project._id}>
                                 <ListLink>
-                                    <NavLink to={`/dashboard/your-projects/${project._id}`}>
-                                        {project.projectName}
-                                    </NavLink>
+                                    <NavLink to={`/dashboard/projects/${project._id}`}>{project.projectName}</NavLink>
                                 </ListLink>
                             </ListElement>
                         );

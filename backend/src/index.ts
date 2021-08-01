@@ -2,7 +2,7 @@ import express from 'express';
 import loginRouter from './routes/login';
 import registerRouter from './routes/register';
 import projectRouter from './routes/project';
-import yourProjectsRouter from './routes/your-projects';
+import yourProjectsRouter from './routes/projects';
 import cors from 'cors';
 
 const app = express();
