@@ -20,10 +20,14 @@ export const createProjectValidationRules = () => {
     ];
 };
 
+export const inviteUserValidationRules = () => {
+    return [body('newUserEmail').trim().isString().isEmail()];
+};
+
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
         return next();
     }
-    return res.status(400).json({ errors: errors.array() });
+    return res.status(400).json({ error: true, messages: errors.array() });
 };

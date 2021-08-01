@@ -1,10 +1,9 @@
 import express, { Request, Response } from 'express';
-import verifyToken, { getUserFromToken } from './../middleware/auth';
+import verifyToken, { getUserFromToken, sendErrorResponse } from '../middleware/auth';
 import mongoose from 'mongoose';
-import { createProjectValidationRules, validate } from './../middleware/validate';
+import { createProjectValidationRules, validate } from '../middleware/validate';
 import connect from '../middleware/database';
-import { findUserByEmail, sendErrorResponse } from '../middleware/auth';
-import Project from './../models/project.model';
+import Project from '../models/project.model';
 
 const router = express.Router();
 

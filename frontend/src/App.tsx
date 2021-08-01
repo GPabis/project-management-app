@@ -11,6 +11,7 @@ import YourProjects from './components/Dashboard/YourProjects';
 import SingleProject from './components/Project';
 import CreateProject from './components/Dashboard/CreateProject';
 import Notification from './components/Notification';
+import AddTeammate from './components/Project/AddTeammate';
 
 const App: FC = () => {
     const authCtx = useContext(AuthContext);
@@ -46,7 +47,7 @@ const App: FC = () => {
                     </Route>
 
                     <Route path="/dashboard/projects/:id/invite" exact>
-                        {!isLoggedIn ? <Redirect to="/" /> : <SingleProject />}
+                        {!isLoggedIn ? <Redirect to="/" /> : <AddTeammate />}
                     </Route>
 
                     <Route path="/dashboard/create-project" exact>

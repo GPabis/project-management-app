@@ -26,8 +26,8 @@ const Notification: React.FC = () => {
 
     return (
         <NotificationContainer error={notificationCtx.error} visible={visible}>
-            {notificationCtx.messages.map((message, index) => (
-                <NotificationText key={index}>{message}</NotificationText>
+            {notificationCtx.messages.map((message) => (
+                <NotificationText key={message}>{message}</NotificationText>
             ))}
         </NotificationContainer>
     );

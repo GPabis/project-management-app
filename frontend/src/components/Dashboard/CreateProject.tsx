@@ -74,7 +74,7 @@ const CreateProject = () => {
 
             const data = await response.json();
             notificationCtx.setNotification(false, [`You create project named "${data.projectName}"`]);
-            history.push(`/dashboard/projects/${data._id}`);
+            history.push(`/dashboard/projects/${data._id}/invite`);
         } catch (err) {
             notificationCtx.setNotification(true, [err]);
         }

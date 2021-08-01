@@ -2,10 +2,14 @@ import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/user.model';
 
-const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+const getToken = (req: Request, res: Response) => {
     const token = req.query.token || req.headers['x-access-token'] || req.body.token;
+    if (!token) return sendErrorResponse(res, 'A token is required for authentication', 401);
+    return token;
+};
 
-    if (!token) return res.status(403).send('A token is required for authentication');
+const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+    const token = getToken(req, res);
 
     try {
         const tokenKey = process.env.TOKEN_KEY;
@@ -39,9 +43,7 @@ export const sendErrorResponse = async (res: Response, message: string, status: 
 };
 
 export const getUserFromToken = async (req: Request, res: Response) => {
-    const token = req.query.token || req.headers['x-access-token'] || req.body.token;
-
-    if (!token) return sendErrorResponse(res, 'A token is required for authentication', 401);
+    const token = getToken(req, res);
 
     try {
         const tokenKey = process.env.TOKEN_KEY;
