@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import verifyToken from './../middleware/auth';
+import verifyToken, { getUserFromToken } from './../middleware/auth';
 import mongoose from 'mongoose';
 import { createProjectValidationRules, validate } from './../middleware/validate';
 import connect from '../middleware/database';
@@ -22,11 +22,11 @@ router.post(
     validate,
     async (req: Request, res: Response) => {
         try {
-            const { userEmail, projectName, projectDescription }: CreateProjectBody = req.body;
+            const { projectName, projectDescription }: CreateProjectBody = req.body;
 
             await connect();
 
-            const user = await findUserByEmail(userEmail);
+            const user = await getUserFromToken(req, res);
 
             if (!user) return await sendErrorResponse(res, 'Somethings goes wrong. Please login again.', 409);
 

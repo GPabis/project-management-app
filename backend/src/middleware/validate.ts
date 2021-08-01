@@ -15,7 +15,6 @@ export const loginUserValidationRules = () => {
 
 export const createProjectValidationRules = () => {
     return [
-        body('userEmail').trim().isEmail().isLength({ max: 50 }),
         body('projectName').trim().isString().isLength({ max: 80, min: 3 }),
         body('projectDescription').trim().isString().isLength({ min: 5, max: 500 }),
     ];

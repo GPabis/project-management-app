@@ -9,7 +9,7 @@ import Welcome from './components/WelcomePage';
 import Dashboard from './components/Dashboard';
 import YourProjects from './components/Dashboard/YourProjects';
 import SingleProject from './components/Project';
-import CreateProject from './components/CreateProject/CreateProject';
+import CreateProject from './components/Dashboard/CreateProject';
 
 const App: FC = () => {
     const authCtx = useContext(AuthContext);

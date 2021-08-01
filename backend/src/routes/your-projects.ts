@@ -1,22 +1,16 @@
 import express, { Request, Response } from 'express';
-import verifyToken, { findUserByEmail, sendErrorResponse } from './../middleware/auth';
+import verifyToken, { findUserByEmail, sendErrorResponse, getUserFromToken } from './../middleware/auth';
 import mongoose from 'mongoose';
 import connect from './../middleware/database';
 import Project from './../models/project.model';
 
-interface YourProjectsBody {
-    email: string;
-}
-
 const route = express.Router();
 
-route.post('/your-projects', verifyToken, async (req: Request, res: Response) => {
+route.get('/your-projects', verifyToken, async (req: Request, res: Response) => {
     try {
-        const { email }: YourProjectsBody = req.body;
-
         await connect();
 
-        const { _id } = await findUserByEmail(email);
+        const { _id } = await getUserFromToken(req, res);
 
         if (!_id) return await sendErrorResponse(res, 'Somethings goes wrong. Please login again.', 409);
         // eslint-disable-next-line

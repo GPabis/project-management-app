@@ -2,6 +2,11 @@ import { useEffect } from 'react';
 import { useState, createContext } from 'react';
 import Cookies from 'universal-cookie';
 
+interface IUserData {
+    username: string;
+    email: string;
+}
+
 interface IAuthContext {
     username: string | null;
     email: string | null;
@@ -33,12 +38,32 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 
     const userIsLoggedIn = !!token;
 
+    useEffect(() => {
+        const loadUserData = async () => {
+            if (userIsLoggedIn && token) {
+                const response = await fetch('http://localhost:8080/login', {
+                    headers: {
+                        'x-access-token': token,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    logoutHandler();
+                }
+
+                const { username, email }: IUserData = await response.json();
+                setUsername(username);
+                setEmail(email);
+            }
+        };
+        loadUserData();
+    }, []);
+
     const login = (token: string, username: string, email: string) => {
         const dateNow = new Date();
         const expires = new Date(new Date(dateNow).setHours(dateNow.getHours() + 2));
         cookies.set('project-token', token, { path: '/', expires: expires });
-        cookies.set('project-username', username, { path: '/', expires: expires });
-        cookies.set('project-email', email, { path: '/', expires: expires });
         setToken(token);
     };
 
@@ -52,8 +77,6 @@ export const AuthContextProvider: React.FC = ({ children }) => {
 
     const logoutHandler = () => {
         cookies.remove('project-token', { path: '/' });
-        cookies.remove('project-username', { path: '/' });
-        cookies.remove('project-email', { path: '/' });
         setToken(null);
         setUsername(null);
         setEmail(null);

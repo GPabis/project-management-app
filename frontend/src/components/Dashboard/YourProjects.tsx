@@ -8,7 +8,7 @@ import AuthContext from '../../store/auth-context';
 import { ErrorFromServer, getServerErrorResponse } from '../../utils/validateForm';
 import Paragraph from '../util/Paragraph';
 
-interface YourProjects {
+interface IYourProjects {
     _id: string;
     projectName: string;
 }
@@ -19,7 +19,7 @@ const YourProjects = () => {
         messages: [],
     });
 
-    const [projects, setProjects] = useState<YourProjects[]>([]);
+    const [projects, setProjects] = useState<IYourProjects[]>([]);
 
     const [noProjects, setNoProjects] = useState(false);
 
@@ -29,20 +29,18 @@ const YourProjects = () => {
 
     useEffect(() => {
         const getYourProjects = async () => {
-            if (!authCtx.token || !authCtx.email) return authCtx.logout();
+            if (!authCtx.token) return authCtx.logout();
             try {
                 const response = await fetch('http://localhost:8080/your-projects', {
-                    method: 'POST',
                     headers: {
                         'x-access-token': authCtx.token,
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email: authCtx.email }),
                 });
                 if (!response.ok) {
                     setErrorFromServer(await getServerErrorResponse(response));
                 }
-                const data: YourProjects[] = await response.json();
+                const data: IYourProjects[] = await response.json();
                 if (data.length === 0) {
                     setNoProjects(true);
                 }
@@ -61,14 +59,20 @@ const YourProjects = () => {
         <>
             <SecoundaryHeadline>See your projects</SecoundaryHeadline>
             <List>
-                {loading && <Paragraph>Loading...</Paragraph>}
-                {!loading && noProjects && <Paragraph>You don't belong to any project</Paragraph>}
-                {!noProjects &&
+                {errorFromServer.error &&
+                    !loading &&
+                    errorFromServer.messages.map((error) => <Paragraph center={true}>{error}</Paragraph>)}
+                {!errorFromServer.error && loading && <Paragraph center={true}>Loading...</Paragraph>}
+                {!errorFromServer.error && !loading && noProjects && (
+                    <Paragraph center={true}>You don't belong to any project</Paragraph>
+                )}
+                {!errorFromServer.error &&
+                    !noProjects &&
                     !loading &&
                     projects.length !== 0 &&
                     projects.map((project) => {
                         return (
-                            <ListElement>
+                            <ListElement key={project._id}>
                                 <ListLink>
                                     <NavLink to={`/dashboard/your-projects/${project._id}`}>
                                         {project.projectName}

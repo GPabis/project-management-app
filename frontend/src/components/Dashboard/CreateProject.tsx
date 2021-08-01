@@ -13,7 +13,6 @@ import Container from '../util/Container';
 import { Submit, FormField, Label, Input, ErrorLabel, Form } from '../util/Form';
 
 interface CreateProjectBody {
-    userEmail: string;
     projectName: string;
     projectDescription: string;
 }
@@ -57,7 +56,6 @@ const CreateProject = () => {
         if (!authCtx.token || !authCtx.email) return authCtx.logout();
 
         const requestData: CreateProjectBody = {
-            userEmail: authCtx.email,
             projectName: enteredProjectName,
             projectDescription: enteredDescription,
         };

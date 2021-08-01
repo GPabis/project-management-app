@@ -1,10 +1,8 @@
 import { useContext } from 'react';
 import AuthContext from '../../store/auth-context';
 import Container from '../util/Container';
-import LinkWrapper from '../util/LinkWrapper';
 import List from '../util/List';
 import ListElement from '../util/ListElement';
-import Paragraph from '../util/Paragraph';
 import SecoundaryHeadline from '../util/SecoundaryHeadline';
 import Headline from './../util/Headline';
 import { NavLink } from 'react-router-dom';
