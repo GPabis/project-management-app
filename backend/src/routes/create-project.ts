@@ -1,9 +1,8 @@
 import express, { Request, Response } from 'express';
-import verifyToken, { getUserFromToken, sendErrorResponse } from '../middleware/auth';
-import mongoose from 'mongoose';
+import verifyToken, { getUserFromToken } from '../middleware/auth';
 import { createProjectValidationRules, validate } from '../middleware/validate';
-import connect from '../middleware/database';
 import Project from '../models/project.model';
+import { sendErrorResponse } from '../middleware/error-handler';
 
 const router = express.Router();
 
@@ -23,8 +22,6 @@ router.post(
         try {
             const { projectName, projectDescription }: CreateProjectBody = req.body;
 
-            await connect();
-
             const user = await getUserFromToken(req, res);
 
             if (!user) return await sendErrorResponse(res, 'Somethings goes wrong. Please login again.', 409);
@@ -39,13 +36,8 @@ router.post(
             res.status(201).json({
                 ...project._doc,
             });
-
-            console.log('Project Created!');
         } catch (err) {
             await sendErrorResponse(res, err, 500);
-            console.log(err);
-        } finally {
-            await mongoose.connection.close();
         }
     },
 );

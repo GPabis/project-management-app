@@ -4,14 +4,9 @@ import { useHistory } from 'react-router-dom';
 import useInput from '../../hooks/use-input';
 import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';
-import {
-    validateProjectName,
-    validateProjectDescription,
-    ErrorFromServer,
-    getServerErrorResponse,
-} from '../../utils/validateForm';
+import { validateTitle, validateDescription, getServerErrorResponse } from '../../utils/validateForm';
 import Container from '../util/Container';
-import { Submit, FormField, Label, Input, ErrorLabel, Form } from '../util/Form';
+import { Submit, FormField, Label, Input, ErrorLabel, Form, Textarea } from '../util/Form';
 
 interface CreateProjectBody {
     projectName: string;
@@ -30,7 +25,7 @@ const CreateProject = () => {
         hasError: projectNameInputHasError,
         valueChangeHandler: projectNameChangedHandler,
         inputBlurHandler: projectNameBlurHandler,
-    } = useInput(validateProjectName);
+    } = useInput(validateTitle);
 
     const {
         value: enteredDescription,
@@ -39,7 +34,7 @@ const CreateProject = () => {
         hasError: descriptionInputHasError,
         valueChangeHandler: descriptionChangedHandler,
         inputBlurHandler: descriptionBlurHandler,
-    } = useInput(validateProjectDescription);
+    } = useInput(validateDescription);
 
     let formIsValid = false;
 
@@ -76,7 +71,8 @@ const CreateProject = () => {
             notificationCtx.setNotification(false, [`You create project named "${data.projectName}"`]);
             history.push(`/dashboard/projects/${data._id}/invite`);
         } catch (err) {
-            notificationCtx.setNotification(true, [err]);
+            await JSON.parse(err);
+            notificationCtx.setNotification(true, [...err.errors]);
         }
     };
 
@@ -96,8 +92,7 @@ const CreateProject = () => {
                 </FormField>
                 <FormField>
                     <Label>Project description: </Label>
-                    <Input
-                        type="text"
+                    <Textarea
                         id="description"
                         onChange={descriptionChangedHandler}
                         onBlur={descriptionBlurHandler}

@@ -44,7 +44,8 @@ const YourProjects = () => {
                 }
                 setProjects(data);
             } catch (err) {
-                notificationCtx.setNotification(true, [err]);
+                await JSON.parse(err);
+                notificationCtx.setNotification(true, [...err.errors]);
             } finally {
                 setLoading(false);
             }

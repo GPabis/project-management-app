@@ -13,12 +13,24 @@ const useInput = (validateValue: (enteredValue: string) => validateValue) => {
     const valueIsValid = validateValue(enteredValue).isValid;
     const hasError = !valueIsValid && isTouched;
 
-    const valueChangeHandler = (event: React.FormEvent<HTMLInputElement>) => {
+    const valueChangeHandler = (
+        event:
+            | React.FormEvent<HTMLInputElement>
+            | React.FormEvent<HTMLTextAreaElement>
+            | React.FormEvent<HTMLOptionElement>
+            | React.FormEvent<HTMLDataElement>,
+    ) => {
         setErrorMessage(validateValue(enteredValue).errorMsg);
         setEnteredValue(event.currentTarget.value);
     };
 
-    const inputBlurHandler = (event: React.FormEvent<HTMLInputElement>) => {
+    const inputBlurHandler = (
+        event:
+            | React.FormEvent<HTMLInputElement>
+            | React.FormEvent<HTMLTextAreaElement>
+            | React.FormEvent<HTMLOptionElement>
+            | React.FormEvent<HTMLDataElement>,
+    ) => {
         setIsTouched(true);
     };
 

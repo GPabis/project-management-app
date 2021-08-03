@@ -66,7 +66,8 @@ const Login = () => {
                 history.push('/dashboard');
             }
         } catch (err) {
-            notificationCtx.setNotification(true, [err]);
+            await JSON.parse(err);
+            notificationCtx.setNotification(true, [...err.errors]);
         }
     };
 

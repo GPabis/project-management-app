@@ -35,15 +35,23 @@ export const validatePassword = (input: string): validateValue => {
     return { isValid: true, errorMsg: '' };
 };
 
-export const validateProjectName = (input: string): validateValue => {
+export const validateTitle = (input: string): validateValue => {
     if (!validateLength(input, 80))
-        return { isValid: false, errorMsg: 'Project Name lenght should be between 5 and 80 letters' };
+        return { isValid: false, errorMsg: 'Title lenght should be between 5 and 80 letters' };
     return { isValid: true, errorMsg: '' };
 };
 
-export const validateProjectDescription = (input: string): validateValue => {
+export const validateDescription = (input: string): validateValue => {
     if (!validateLength(input, 500))
-        return { isValid: false, errorMsg: 'Project Name lenght should be between 5 and 500 letters' };
+        return { isValid: false, errorMsg: 'Description lenght should be between 5 and 500 letters' };
+    return { isValid: true, errorMsg: '' };
+};
+
+export const validateDate = (input: string): validateValue => {
+    const re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+    if (input == '' && !input.match(re)) return { isValid: false, errorMsg: 'Invalid date' };
+    if (new Date() >= new Date(input))
+        return { isValid: false, errorMsg: 'You cannot set date before task was created' };
     return { isValid: true, errorMsg: '' };
 };
 

@@ -1,15 +1,11 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import User from '../models/user.model';
-
-const getToken = (req: Request, res: Response) => {
-    const token = req.query.token || req.headers['x-access-token'] || req.body.token;
-    if (!token) return sendErrorResponse(res, 'A token is required for authentication', 401);
-    return token;
-};
+import { sendErrorResponse } from './error-handler';
 
 const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = getToken(req, res);
+    const token = req.query.token || req.headers['x-access-token'] || req.body.token;
+    if (!token) return sendErrorResponse(res, 'A token is required for authentication', 401);
 
     try {
         const tokenKey = process.env.TOKEN_KEY;
@@ -30,20 +26,9 @@ export const findUserByEmail = async (email: string) => {
     return existingUser ? existingUser : false;
 };
 
-export const sendErrorResponse = async (res: Response, message: string, status: number) => {
-    const error = {
-        errors: [
-            {
-                msg: message,
-            },
-        ],
-    };
-
-    return res.status(status).json(error);
-};
-
 export const getUserFromToken = async (req: Request, res: Response) => {
-    const token = getToken(req, res);
+    const token = req.query.token || req.headers['x-access-token'] || req.body.token;
+    if (!token) return sendErrorResponse(res, 'A token is required for authentication', 401);
 
     try {
         const tokenKey = process.env.TOKEN_KEY;

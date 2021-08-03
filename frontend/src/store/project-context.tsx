@@ -82,6 +82,8 @@ export const ProjectContextProvider: React.FC = ({ children }) => {
 
         const data = await resposne.json();
 
+        console.log(data);
+
         const project: IProject = {
             ...data,
         };

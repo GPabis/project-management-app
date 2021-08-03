@@ -1,15 +1,12 @@
 import express, { Request, Response } from 'express';
-import verifyToken, { findUserByEmail, sendErrorResponse, getUserFromToken } from '../middleware/auth';
-import mongoose from 'mongoose';
-import connect from '../middleware/database';
+import verifyToken, { getUserFromToken } from '../middleware/auth';
 import Project from '../models/project.model';
+import { sendErrorResponse } from '../middleware/error-handler';
 
 const route = express.Router();
 
 route.get('/projects', verifyToken, async (req: Request, res: Response) => {
     try {
-        await connect();
-
         const { _id } = await getUserFromToken(req, res);
 
         if (!_id) return await sendErrorResponse(res, 'Somethings goes wrong. Please login again.', 409);
@@ -23,8 +20,6 @@ route.get('/projects', verifyToken, async (req: Request, res: Response) => {
         res.status(200).json(projects);
     } catch (error) {
         return await sendErrorResponse(res, error, 409);
-    } finally {
-        await mongoose.connection.close();
     }
 });
 

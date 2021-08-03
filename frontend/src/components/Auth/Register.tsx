@@ -70,7 +70,8 @@ const Register = () => {
                 history.push('/login');
             }
         } catch (err) {
-            notificationCtx.setNotification(false, [err]);
+            await JSON.parse(err);
+            notificationCtx.setNotification(true, [...err.errors]);
         }
     };
 

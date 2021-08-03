@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { useContext } from 'react';
 import { useState, createContext } from 'react';
 import Cookies from 'universal-cookie';
 
-interface IUserData {
+export interface IUserData {
     username: string;
     email: string;
 }

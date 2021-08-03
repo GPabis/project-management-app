@@ -1,6 +1,6 @@
 import mongoose, { Date } from 'mongoose';
 
-enum TaskStatus {
+export enum TaskStatus {
     Waiting,
     InProgress,
     Review,

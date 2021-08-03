@@ -3,11 +3,10 @@ import { Form, FormField, Label, Input, ErrorLabel, Submit } from '../util/Form'
 import { getServerErrorResponse, validateEmail } from '../../utils/validateForm';
 import useInput from '../../hooks/use-input';
 import SecoundaryHeadline from '../util/SecoundaryHeadline';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useContext } from 'react';
 import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';
-import { useState } from 'react';
 import ProjectContext from '../../store/project-context';
 
 const AddTeammate = () => {
@@ -61,7 +60,8 @@ const AddTeammate = () => {
                 notificationCtx.setNotification(error, messages);
             }
         } catch (err) {
-            notificationCtx.setNotification(true, [err]);
+            await JSON.parse(err);
+            notificationCtx.setNotification(true, [...err.errors]);
         }
     };
 

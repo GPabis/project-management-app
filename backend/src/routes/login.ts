@@ -1,11 +1,10 @@
 import express, { Response, Request } from 'express';
-import connect from '../middleware/database';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
 import { loginUserValidationRules, validate } from '../middleware/validate';
-import verifyToken, { findUserByEmail, sendErrorResponse } from '../middleware/auth';
+import verifyToken, { findUserByEmail } from '../middleware/auth';
 import { getUserFromToken } from './../middleware/auth';
+import { sendErrorResponse } from '../middleware/error-handler';
 
 const router = express.Router();
 
@@ -17,8 +16,6 @@ interface loginBody {
 router.post('/login', loginUserValidationRules(), validate, async (req: Request, res: Response) => {
     try {
         const { email, password }: loginBody = req.body;
-
-        await connect();
 
         const user = await findUserByEmail(email);
 
@@ -38,20 +35,15 @@ router.post('/login', loginUserValidationRules(), validate, async (req: Request,
         }
     } catch (err) {
         await sendErrorResponse(res, err, 500);
-    } finally {
-        await mongoose.connection.close();
     }
 });
 
 router.get('/login', verifyToken, async (req: Request, res: Response) => {
     try {
-        await connect();
         const { email, username } = await getUserFromToken(req, res);
         res.status(200).json({ email, username });
     } catch (err) {
         await sendErrorResponse(res, err, 500);
-    } finally {
-        await mongoose.connection.close();
     }
 });
 

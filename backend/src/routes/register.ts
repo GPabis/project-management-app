@@ -1,11 +1,10 @@
 import User from '../models/user.model';
 import express, { Response, Request } from 'express';
-import connect from '../middleware/database';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import mongoose from 'mongoose';
 import { registerUserValidationRules, validate } from '../middleware/validate';
-import { findUserByEmail, sendErrorResponse } from '../middleware/auth';
+import { findUserByEmail } from '../middleware/auth';
+import { sendErrorResponse } from '../middleware/error-handler';
 
 interface registerBody {
     email: string;
@@ -18,7 +17,6 @@ const router = express.Router();
 router.post('/register', registerUserValidationRules(), validate, async (req: Request, res: Response) => {
     try {
         const { email, username, password }: registerBody = req.body;
-        await connect();
 
         const userExist = await findUserByEmail(email);
 
@@ -48,8 +46,6 @@ router.post('/register', registerUserValidationRules(), validate, async (req: Re
         });
     } catch (err) {
         await sendErrorResponse(res, err, 500);
-    } finally {
-        await mongoose.connection.close();
     }
 });
 
