@@ -5,14 +5,10 @@ import { NavLink } from 'react-router-dom';
 import SecoundaryHeadline from '../util/SecoundaryHeadline';
 import { useEffect, useContext, useState } from 'react';
 import AuthContext from '../../store/auth-context';
-import { ErrorFromServer, getServerErrorResponse } from '../../utils/validateForm';
+import { getServerErrorResponse } from '../../utils/validateForm';
 import Paragraph from '../util/Paragraph';
 import NotificationContext from '../../store/notification-context';
-
-interface IYourProjects {
-    _id: string;
-    projectName: string;
-}
+import { IYourProjects } from '../../types/project-types';
 
 const YourProjects = () => {
     const [projects, setProjects] = useState<IYourProjects[]>([]);

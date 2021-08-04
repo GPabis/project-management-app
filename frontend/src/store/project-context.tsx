@@ -1,56 +1,8 @@
-import React, { createContext } from 'react';
-import { useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import { useContext } from 'react';
+import React, { useState, createContext, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import NotificationContext from './notification-context';
 import AuthContext from './auth-context';
-import { useEffect } from 'react';
-
-enum TaskStatus {
-    Waiting,
-    InProgress,
-    Review,
-    Test,
-    Done,
-}
-
-interface IComment {
-    taskCommentId: string;
-    taskCommentator: string;
-    taskCommentContent: string;
-    taskCommentData: Date;
-}
-
-interface ITask {
-    taskId: string;
-    taskName: string;
-    taskDescription: string;
-    taskDateStart: Date;
-    tastDateEnd: Date;
-    teskResponsible: string;
-    taskStatus: TaskStatus;
-    taskComments: IComment[];
-}
-
-interface IProjectTeamData {
-    _id: string;
-    username: string;
-    email: string;
-}
-
-interface IProject {
-    projectId: string;
-    projectName: string;
-    projectDescription: string;
-    projectAdmin: string;
-    // projectTasks: ITask[];
-    projetTeamData: IProjectTeamData[];
-}
-
-interface IProjectCoxtext {
-    project: IProject | null;
-    getProject: (id: string) => void;
-}
+import { IProject, IProjectCoxtext } from '../types/project-types';
 
 const ProjectContext = createContext<IProjectCoxtext>({
     project: null,

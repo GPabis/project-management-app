@@ -1,22 +1,7 @@
 import { useEffect } from 'react';
 import { useState, createContext } from 'react';
 import Cookies from 'universal-cookie';
-
-export interface IUserData {
-    username: string;
-    email: string;
-}
-
-interface IAuthContext {
-    username: string | null;
-    email: string | null;
-    token: string | null;
-    isLoggedIn: boolean;
-    login: (token: string, username: string, email: string) => void;
-    setUsernameHandler: (username: string) => void;
-    setEmailHandler: (email: string) => void;
-    logout: () => void;
-}
+import { IAuthContext, IUserData } from '../types/user-types';
 
 const AuthContext = createContext<IAuthContext>({
     username: '',

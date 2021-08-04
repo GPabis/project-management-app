@@ -1,11 +1,6 @@
 import React, { createContext } from 'react';
 import { useState } from 'react';
-
-interface INotificationContext {
-    error: boolean;
-    messages: string[];
-    setNotification: (error: boolean, messages: string[]) => void;
-}
+import { INotificationContext } from '../types/global-types';
 
 const NotificationContext = createContext<INotificationContext>({
     error: false,

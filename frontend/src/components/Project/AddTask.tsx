@@ -8,7 +8,7 @@ import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';
 import ProjectContext from '../../store/project-context';
 import { validateDescription, validateTitle, validateDate, validateEmail } from './../../utils/validateForm';
-import { IUserData } from './../../store/auth-context';
+import { IUserData } from '../../types/user-types';
 
 const AddTask = () => {
     const { id } = useParams<{ id: string }>();
@@ -54,15 +54,6 @@ const AddTask = () => {
     } = useInput(validateDate);
 
     const {
-        value: enteredTaskAuthor,
-        isValid: enteredTaskAuthorIsValid,
-        errorMessage: taskAuthorErrorMsg,
-        hasError: taskAuthorInputHasError,
-        valueChangeHandler: taskAuthorChangedHandler,
-        inputBlurHandler: taskAuthorBlurHandler,
-    } = useInput(validateEmail);
-
-    const {
         value: enteredTaskResponsible,
         isValid: enteredTaskResponsibleIsValid,
         errorMessage: taskResponsibleErrorMsg,
@@ -84,7 +75,6 @@ const AddTask = () => {
         enteredDescriptionIsValid &&
         enteredDateStartIsValid &&
         enteredDeadlineIsValid &&
-        enteredTaskAuthorIsValid &&
         enteredTaskResponsibleIsValid
     ) {
         formIsValid = true;
@@ -146,17 +136,6 @@ const AddTask = () => {
                         value={enteredDeadline}
                     />
                     {deadlineInputHasError && <ErrorLabel>{deadlineErrorMsg}</ErrorLabel>}
-                </FormField>
-                <FormField>
-                    <Label>Task Created By: </Label>
-                    <Select
-                        onChange={taskAuthorChangedHandler}
-                        onBlur={taskAuthorBlurHandler}
-                        value={enteredTaskAuthor}
-                    >
-                        {teamOptions}
-                    </Select>
-                    {taskAuthorInputHasError && <ErrorLabel>{taskAuthorErrorMsg}</ErrorLabel>}
                 </FormField>
                 <FormField>
                     <Label>Responsible: </Label>
