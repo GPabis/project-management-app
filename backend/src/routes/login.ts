@@ -27,6 +27,7 @@ router.post('/login', loginUserValidationRules(), validate, async (req: Request,
             const token = jwt.sign({ user_id: user._id, email }, tokenKey, {
                 expiresIn: '2h',
             });
+
             user.token = token;
 
             res.status(200).json(user);

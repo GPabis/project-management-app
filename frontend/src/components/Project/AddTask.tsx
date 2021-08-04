@@ -9,7 +9,6 @@ import NotificationContext from '../../store/notification-context';
 import ProjectContext from '../../store/project-context';
 import { validateDescription, validateTitle, validateDate, validateEmail } from './../../utils/validateForm';
 import { IUserData } from './../../store/auth-context';
-import Paragraph from './../util/Paragraph';
 
 const AddTask = () => {
     const { id } = useParams<{ id: string }>();
@@ -75,16 +74,6 @@ const AddTask = () => {
     useEffect(() => {
         if (id) {
             projectCtx.getProject(id);
-            setTeam([
-                {
-                    email: 'cos@cos.pl',
-                    username: 'cosiek',
-                },
-                {
-                    email: 'grzegorz@gmail.com',
-                    username: 'Ja',
-                },
-            ]);
         }
     }, []);
 
@@ -101,10 +90,10 @@ const AddTask = () => {
         formIsValid = true;
     }
 
-    const teamOptions = !team.length ? (
+    const teamOptions = !(projectCtx.project && projectCtx.project.projetTeamData) ? (
         <Option>Brak członków zespołu</Option>
     ) : (
-        team.map((person) => (
+        projectCtx.project.projetTeamData.map((person) => (
             <Option key={person.email} value={person.email}>
                 {person.username} ( {person.email} ){' '}
             </Option>

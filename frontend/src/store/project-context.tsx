@@ -32,13 +32,19 @@ interface ITask {
     taskComments: IComment[];
 }
 
+interface IProjectTeamData {
+    _id: string;
+    username: string;
+    email: string;
+}
+
 interface IProject {
     projectId: string;
     projectName: string;
     projectDescription: string;
     projectAdmin: string;
-    projectTeam: string[];
-    projectTasks: ITask[];
+    // projectTasks: ITask[];
+    projetTeamData: IProjectTeamData[];
 }
 
 interface IProjectCoxtext {
@@ -82,10 +88,12 @@ export const ProjectContextProvider: React.FC = ({ children }) => {
 
         const data = await resposne.json();
 
-        console.log(data);
-
         const project: IProject = {
-            ...data,
+            projectAdmin: data.projectAdmin,
+            projectDescription: data.projectDescription,
+            projectName: data.projectName,
+            projectId: data._id,
+            projetTeamData: data.projectTeamData,
         };
 
         setProject(project);

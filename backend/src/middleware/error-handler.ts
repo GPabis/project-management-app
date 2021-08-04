@@ -8,7 +8,6 @@ export const sendErrorResponse = async (res: Response, message: string, status: 
             },
         ],
     };
-    console.log(error);
 
     return await res.status(status).json(error);
 };

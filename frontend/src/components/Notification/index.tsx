@@ -14,15 +14,15 @@ const Notification: React.FC = () => {
             setVisible(true);
 
             const showNotification = setTimeout(() => {
-                setVisible(false);
                 notificationCtx.setNotification(false, []);
+                setVisible(false);
             }, 10000);
 
             return () => {
                 clearTimeout(showNotification);
             };
         }
-    }, [notificationCtx.error, notificationCtx.messages]);
+    });
 
     return (
         <NotificationContainer error={notificationCtx.error} visible={visible}>

@@ -51,7 +51,6 @@ router.put(
 
                 const project = await Project.findById(projectID);
                 if (!project) return await sendErrorResponse(res, 'There is no project with that ID', 409);
-
                 if (project.projectAdmin !== user._id.toString())
                     return await sendErrorResponse(res, 'Only project admin can invite new people!', 409);
 
@@ -64,9 +63,11 @@ router.put(
                         `User ${invitedUser.username} already is a part of the team`,
                         409,
                     );
+
                 await Project.findByIdAndUpdate(project._id.toString(), {
                     projectTeam: [...project.projectTeam, invitedUser._id.toString()],
                 });
+
                 return res.status(200).json({
                     error: false,
                     messages: [`User ${invitedUser.username} added to project "${project.projectName}"`],
