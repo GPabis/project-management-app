@@ -56,12 +56,12 @@ const AddTeammate = () => {
             }
 
             if (response.ok) {
-                const { error, messages }: { error: boolean; messages: string[] } = await response.json();
+                const { error, messages }: { error: boolean; messages: string } = await response.json();
                 notificationCtx.setNotification(error, messages);
             }
-        } catch (err) {
-            await JSON.parse(err);
-            notificationCtx.setNotification(true, [...err.errors]);
+        } catch (error) {
+            await JSON.parse(error);
+            notificationCtx.setNotification(true, error.errorMessage);
         }
     };
 

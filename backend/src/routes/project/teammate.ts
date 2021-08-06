@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
 import verifyToken, { getUserFromToken } from '../../middleware/auth';
-import mongoose from 'mongoose';
 import Project from '../../models/project.model';
 import { inviteUserValidationRules, validate } from '../../middleware/validate';
 import { findUserByEmail } from './../../middleware/auth';
 import { sendErrorResponse } from '../../middleware/error-handler';
+import { getProjectById, isNotProjectAdmin, isPartOfTeam } from './../../middleware/helpers';
 
 const router = express.Router();
 
@@ -19,18 +19,14 @@ router.put(
             const { newUserEmail } = req.body;
 
             const user = await getUserFromToken(req, res);
-            if (!user) return await sendErrorResponse(res, 'Somethings goes wrong. Please login again.', 409);
 
-            const project = await Project.findById(projectID);
-            if (!project) return await sendErrorResponse(res, 'There is no project with that ID', 409);
-            if (project.projectAdmin !== user._id.toString())
-                return await sendErrorResponse(res, 'Only project admin can invite new people!', 409);
+            const project = await getProjectById(projectID);
+
+            isNotProjectAdmin(project.projectAdmin, user._id);
 
             const invitedUser = await findUserByEmail(newUserEmail);
-            if (!invitedUser) return await sendErrorResponse(res, 'There is no user with that email!', 409);
 
-            if (project.projectTeam.includes(invitedUser._id.toString()))
-                return await sendErrorResponse(res, `User ${invitedUser.username} already is a part of the team`, 409);
+            isPartOfTeam(project.projectTeam, invitedUser._id, invitedUser.username);
 
             await Project.findByIdAndUpdate(project._id.toString(), {
                 projectTeam: [...project.projectTeam, invitedUser._id.toString()],
@@ -38,7 +34,7 @@ router.put(
 
             return res.status(200).json({
                 error: false,
-                messages: [`User ${invitedUser.username} added to project "${project.projectName}"`],
+                messages: `User ${invitedUser.username} added to project "${project.projectName}"`,
             });
         } catch (err) {
             return await sendErrorResponse(res, err, 500);

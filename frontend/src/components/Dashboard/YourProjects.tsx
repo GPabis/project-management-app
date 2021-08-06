@@ -9,6 +9,7 @@ import { getServerErrorResponse } from '../../utils/validateForm';
 import Paragraph from '../util/Paragraph';
 import NotificationContext from '../../store/notification-context';
 import { IYourProjects } from '../../types/project-types';
+import { parse } from 'path';
 
 const YourProjects = () => {
     const [projects, setProjects] = useState<IYourProjects[]>([]);
@@ -32,16 +33,16 @@ const YourProjects = () => {
                 });
                 if (!response.ok) {
                     const { error, messages } = await getServerErrorResponse(response);
-                    notificationCtx.setNotification(error, [...messages]);
+                    notificationCtx.setNotification(error, messages);
                 }
                 const data: IYourProjects[] = await response.json();
                 if (data.length === 0) {
                     setNoProjects(true);
                 }
                 setProjects(data);
-            } catch (err) {
-                await JSON.parse(err);
-                notificationCtx.setNotification(true, [...err.errors]);
+            } catch (error) {
+                await JSON.parse(error);
+                notificationCtx.setNotification(true, error.errorMessage);
             } finally {
                 setLoading(false);
             }

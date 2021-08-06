@@ -21,7 +21,7 @@ export const ProjectContextProvider: React.FC = ({ children }) => {
         setId(id);
 
         if (!authCtx.token) {
-            notificationCtx.setNotification(true, ['You are not logged in. Please log in again']);
+            notificationCtx.setNotification(true, 'You are not logged in. Please log in again');
             authCtx.logout();
             history.push('/login');
             return;
@@ -35,7 +35,7 @@ export const ProjectContextProvider: React.FC = ({ children }) => {
         });
 
         if (!resposne.ok) {
-            notificationCtx.setNotification(true, ['Somethings goes wrong. Please try letter.']);
+            notificationCtx.setNotification(true, 'Somethings goes wrong. Please try letter.');
         }
 
         const data = await resposne.json();

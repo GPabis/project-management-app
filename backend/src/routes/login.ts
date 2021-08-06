@@ -2,8 +2,8 @@ import express, { Response, Request } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { loginUserValidationRules, validate } from '../middleware/validate';
-import verifyToken, { findUserByEmail } from '../middleware/auth';
-import { getUserFromToken } from './../middleware/auth';
+import verifyToken, { findUserByEmail, getUserFromToken } from '../middleware/auth';
+import { getEnvTokenKey } from './../middleware/auth';
 import { sendErrorResponse } from '../middleware/error-handler';
 import { loginBody } from '../types/auth-types';
 
@@ -13,11 +13,9 @@ router.post('/login', loginUserValidationRules(), validate, async (req: Request,
     try {
         const { email, password }: loginBody = req.body;
 
-        const user = await findUserByEmail(email);
+        const user = await findUserByEmail(email, false);
 
-        const tokenKey = process.env.TOKEN_KEY;
-
-        if (!tokenKey) return await sendErrorResponse(res, 'Server Problem - plesase try again later', 409);
+        const tokenKey = getEnvTokenKey();
 
         if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign({ user_id: user._id, email }, tokenKey, {

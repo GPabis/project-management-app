@@ -18,8 +18,6 @@ router.post(
 
             const user = await getUserFromToken(req, res);
 
-            if (!user) return await sendErrorResponse(res, 'Somethings goes wrong. Please login again.', 409);
-
             const project = await Project.create({
                 projectName,
                 projectDescription,

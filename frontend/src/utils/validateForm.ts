@@ -2,7 +2,7 @@ import { validateValue } from '../hooks/use-input';
 
 export interface ErrorFromServer {
     error: boolean;
-    messages: string[];
+    messages: string;
 }
 
 const validateLength = (input: string, maxLength: number) => {
@@ -57,9 +57,8 @@ export const validateDate = (input: string): validateValue => {
 
 export const getServerErrorResponse = async (response: Response) => {
     const error = await response.json();
-    const errors = error.errors;
-    if (errors) {
-        const errorMessages: string[] = errors.map((err: { msg: string }) => err.msg);
+    if (error.errorMessage) {
+        const errorMessages: string = error.errorMessage;
         const errorFromServer: ErrorFromServer = {
             error: true,
             messages: errorMessages,
@@ -68,6 +67,6 @@ export const getServerErrorResponse = async (response: Response) => {
     }
     return {
         error: false,
-        messages: [],
+        messages: '',
     };
 };

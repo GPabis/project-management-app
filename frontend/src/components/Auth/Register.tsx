@@ -66,12 +66,12 @@ const Register = () => {
             }
 
             if (response.ok) {
-                notificationCtx.setNotification(false, ['You created account. You can login now!']);
+                notificationCtx.setNotification(false, 'You created account. You can login now!');
                 history.push('/login');
             }
-        } catch (err) {
-            await JSON.parse(err);
-            notificationCtx.setNotification(true, [...err.errors]);
+        } catch (error) {
+            await JSON.parse(error);
+            notificationCtx.setNotification(true, error.errorMessage);
         }
     };
 

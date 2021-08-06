@@ -59,15 +59,15 @@ const Login = () => {
 
             if (response.ok) {
                 const { token, username, email } = await response.json();
-                notificationCtx.setNotification(false, ['You are logged in!']);
+                notificationCtx.setNotification(false, 'You are logged in!');
                 authCtx.setEmailHandler(email);
                 authCtx.setUsernameHandler(username);
                 authCtx.login(token, username, email);
                 history.push('/dashboard');
             }
-        } catch (err) {
-            await JSON.parse(err);
-            notificationCtx.setNotification(true, [...err.errors]);
+        } catch (error) {
+            await JSON.parse(error);
+            notificationCtx.setNotification(true, error.errorMessage);
         }
     };
 

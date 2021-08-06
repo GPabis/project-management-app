@@ -10,11 +10,11 @@ const Notification: React.FC = () => {
     const notificationCtx = useContext(NotificationContext);
 
     useEffect(() => {
-        if (notificationCtx.messages.length > 0) {
+        if (notificationCtx.messages) {
             setVisible(true);
 
             const showNotification = setTimeout(() => {
-                notificationCtx.setNotification(false, []);
+                notificationCtx.setNotification(false, '');
                 setVisible(false);
             }, 10000);
 
@@ -26,9 +26,7 @@ const Notification: React.FC = () => {
 
     return (
         <NotificationContainer error={notificationCtx.error} visible={visible}>
-            {notificationCtx.messages.map((message) => (
-                <NotificationText key={message}>{message}</NotificationText>
-            ))}
+            <NotificationText>{notificationCtx.messages}</NotificationText>
         </NotificationContainer>
     );
 };

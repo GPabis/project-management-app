@@ -6,6 +6,7 @@ import { registerUserValidationRules, validate } from '../middleware/validate';
 import { findUserByEmail } from '../middleware/auth';
 import { sendErrorResponse } from '../middleware/error-handler';
 import { registerBody } from '../types/auth-types';
+import { getEnvTokenKey } from './../middleware/auth';
 
 const router = express.Router();
 
@@ -13,9 +14,7 @@ router.post('/register', registerUserValidationRules(), validate, async (req: Re
     try {
         const { email, username, password }: registerBody = req.body;
 
-        const userExist = await findUserByEmail(email);
-
-        if (userExist) return await sendErrorResponse(res, 'User already exist', 409);
+        await findUserByEmail(email, true);
 
         const encryptedPassword = await bcrypt.hash(password, 10);
 
@@ -25,11 +24,7 @@ router.post('/register', registerUserValidationRules(), validate, async (req: Re
             password: encryptedPassword,
         });
 
-        const tokenKey = process.env.TOKEN_KEY;
-
-        if (!tokenKey) {
-            return res.status(500).send('Server Problem - plesase try again later');
-        }
+        const tokenKey = getEnvTokenKey();
 
         const token = jwt.sign({ user_id: user._id, email }, tokenKey, {
             expiresIn: '2h',

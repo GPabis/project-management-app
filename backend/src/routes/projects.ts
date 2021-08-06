@@ -8,8 +8,6 @@ const route = express.Router();
 route.get('/projects', verifyToken, async (req: Request, res: Response) => {
     try {
         const { _id } = await getUserFromToken(req, res);
-
-        if (!_id) return await sendErrorResponse(res, 'Somethings goes wrong. Please login again.', 409);
         // eslint-disable-next-line
         const yourProjects: any[] = await Project.find({ projectTeam: { $elemMatch: { $eq: _id.toString() } } });
 
@@ -19,6 +17,7 @@ route.get('/projects', verifyToken, async (req: Request, res: Response) => {
 
         res.status(200).json(projects);
     } catch (error) {
+        console.log(error);
         return await sendErrorResponse(res, error, 409);
     }
 });

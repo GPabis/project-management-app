@@ -4,17 +4,17 @@ import { INotificationContext } from '../types/global-types';
 
 const NotificationContext = createContext<INotificationContext>({
     error: false,
-    messages: [],
+    messages: '',
     setNotification: () => {},
 });
 
 export const NotificationContainerProvider: React.FC = ({ children }) => {
     const [error, setError] = useState(false);
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState('');
 
-    const setNotification = (error: boolean, messages: string[]) => {
+    const setNotification = (error: boolean, message: string) => {
         setError(error);
-        setMessages([...messages]);
+        setMessages(message);
     };
 
     const contextValue = {

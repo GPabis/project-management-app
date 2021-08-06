@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
+import Project from '../models/project.model';
 
 config();
 

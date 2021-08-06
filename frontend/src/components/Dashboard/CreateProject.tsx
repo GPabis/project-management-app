@@ -64,15 +64,15 @@ const CreateProject = () => {
 
             if (!response.ok) {
                 const { error, messages } = await getServerErrorResponse(response);
-                notificationCtx.setNotification(error, [...messages]);
+                notificationCtx.setNotification(error, messages);
             }
 
             const data = await response.json();
-            notificationCtx.setNotification(false, [`You create project named "${data.projectName}"`]);
+            notificationCtx.setNotification(false, `You create project named "${data.projectName}"`);
             history.push(`/dashboard/projects/${data._id}/invite`);
-        } catch (err) {
-            await JSON.parse(err);
-            notificationCtx.setNotification(true, [...err.errors]);
+        } catch (error) {
+            await JSON.parse(error);
+            notificationCtx.setNotification(true, error.errorMessage);
         }
     };
 
