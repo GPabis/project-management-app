@@ -5,13 +5,9 @@ import { loginUserValidationRules, validate } from '../middleware/validate';
 import verifyToken, { findUserByEmail } from '../middleware/auth';
 import { getUserFromToken } from './../middleware/auth';
 import { sendErrorResponse } from '../middleware/error-handler';
+import { loginBody } from '../types/auth-types';
 
 const router = express.Router();
-
-interface loginBody {
-    email: string;
-    password: string;
-}
 
 router.post('/login', loginUserValidationRules(), validate, async (req: Request, res: Response) => {
     try {

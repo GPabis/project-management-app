@@ -1,36 +1,5 @@
-import mongoose, { Date } from 'mongoose';
-
-export enum TaskStatus {
-    Waiting,
-    InProgress,
-    Review,
-    Test,
-    Done,
-}
-
-interface IComment {
-    taskCommentator: string;
-    taskCommentContent: string;
-    taskCommentData: Date;
-}
-
-interface ITask {
-    taskName: string;
-    taskDescription: string;
-    taskDateStart: Date;
-    tastDateEnd: Date;
-    teskResponsible: string;
-    taskStatus: TaskStatus;
-    taskComments: IComment[];
-}
-
-export interface ProjectModel {
-    projectName: string;
-    projectDescription: string;
-    projectAdmin: string;
-    projectTeam: string[];
-    projectTasks: ITask[];
-}
+import mongoose from 'mongoose';
+import { ProjectModel } from '../types/project-types';
 
 const Schema = mongoose.Schema;
 

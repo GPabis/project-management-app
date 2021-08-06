@@ -5,12 +5,7 @@ import jwt from 'jsonwebtoken';
 import { registerUserValidationRules, validate } from '../middleware/validate';
 import { findUserByEmail } from '../middleware/auth';
 import { sendErrorResponse } from '../middleware/error-handler';
-
-interface registerBody {
-    email: string;
-    username: string;
-    password: string;
-}
+import { registerBody } from '../types/auth-types';
 
 const router = express.Router();
 

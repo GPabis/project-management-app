@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response, Request, NextFunction } from 'express';
 
 export const sendErrorResponse = async (res: Response, message: string, status: number) => {
     const error = {

@@ -3,15 +3,9 @@ import verifyToken, { getUserFromToken } from '../middleware/auth';
 import { createProjectValidationRules, validate } from '../middleware/validate';
 import Project from '../models/project.model';
 import { sendErrorResponse } from '../middleware/error-handler';
+import { CreateProjectBody } from '../types/project-types';
 
 const router = express.Router();
-
-interface CreateProjectBody {
-    userEmail: string;
-    projectName: string;
-    projectDescription: string;
-    projectTeam: string[];
-}
 
 router.post(
     '/create-project',
