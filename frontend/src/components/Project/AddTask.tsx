@@ -3,19 +3,23 @@ import { Form, FormField, Label, Input, ErrorLabel, Submit, Textarea, Select, Op
 import useInput from '../../hooks/use-input';
 import SecoundaryHeadline from '../util/SecoundaryHeadline';
 import { useParams } from 'react-router-dom';
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext } from 'react';
 import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';
 import ProjectContext from '../../store/project-context';
-import { validateDescription, validateTitle, validateDate, validateEmail } from './../../utils/validateForm';
-import { IUserData } from '../../types/user-types';
+import {
+    validateDescription,
+    validateTitle,
+    validateDate,
+    getServerErrorResponse,
+    validateID,
+} from './../../utils/validateForm';
 
 const AddTask = () => {
     const { id } = useParams<{ id: string }>();
     const projectCtx = useContext(ProjectContext);
     const authCtx = useContext(AuthContext);
     const notificationCtx = useContext(NotificationContext);
-    const [team, setTeam] = useState<IUserData[]>([]);
 
     const {
         value: enteredTitle,
@@ -60,13 +64,51 @@ const AddTask = () => {
         hasError: taskResponsibleInputHasError,
         valueChangeHandler: taskResponsibleChangedHandler,
         inputBlurHandler: taskResponsibleBlurHandler,
-    } = useInput(validateEmail);
+    } = useInput(validateID);
 
     useEffect(() => {
         if (id) {
             projectCtx.getProject(id);
         }
     }, []);
+
+    const submitTaskHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!authCtx.token || !authCtx.email) return authCtx.logout();
+
+        const formBody = {
+            taskName: enteredTitle,
+            taskDescription: enteredDescription,
+            taskDateStart: enteredDateStart,
+            taskDateEnd: enteredDeadline,
+            taskResponsible: enteredTaskResponsible,
+        };
+
+        try {
+            const response = await fetch(`http://localhost:8080/project/${id}/task`, {
+                method: 'POST',
+                headers: {
+                    'x-access-token': authCtx.token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formBody),
+            });
+
+            if (!response.ok) {
+                const { error, messages } = await getServerErrorResponse(response);
+                notificationCtx.setNotification(error, messages);
+            }
+
+            if (response.ok) {
+                const { error, messages }: { error: boolean; messages: string } = await response.json();
+                notificationCtx.setNotification(error, messages);
+                projectCtx.getProject(id);
+            }
+        } catch (error) {
+            notificationCtx.setNotification(true, error.errorMessage);
+        }
+    };
 
     let formIsValid = false;
 
@@ -84,8 +126,8 @@ const AddTask = () => {
         <Option>Brak członków zespołu</Option>
     ) : (
         projectCtx.project.projetTeamData.map((person) => (
-            <Option key={person.email} value={person.email}>
-                {person.username} ( {person.email} ){' '}
+            <Option key={person._id} value={person._id}>
+                {person.username} ( {person.email} )
             </Option>
         ))
     );
@@ -93,7 +135,7 @@ const AddTask = () => {
     return (
         <Container center={true}>
             <SecoundaryHeadline>Add teammate to project "{projectCtx.project?.projectName}"</SecoundaryHeadline>
-            <Form>
+            <Form onSubmit={submitTaskHandler}>
                 <FormField>
                     <Label>Task Title: </Label>
                     <Input
@@ -144,6 +186,9 @@ const AddTask = () => {
                         onBlur={taskResponsibleBlurHandler}
                         value={enteredTaskResponsible}
                     >
+                        <Option value={0} selected hidden>
+                            Select responsible person
+                        </Option>
                         {teamOptions}
                     </Select>
                     {taskResponsibleInputHasError && <ErrorLabel>{taskResponsibleErrorMsg}</ErrorLabel>}

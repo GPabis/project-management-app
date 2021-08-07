@@ -35,7 +35,7 @@ export interface IProject {
     projectName: string;
     projectDescription: string;
     projectAdmin: string;
-    // projectTasks: ITask[];
+    projectTasks: ITask[];
     projetTeamData: IProjectTeamData[];
 }
 

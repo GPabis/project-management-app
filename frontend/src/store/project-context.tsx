@@ -46,7 +46,10 @@ export const ProjectContextProvider: React.FC = ({ children }) => {
             projectName: data.projectName,
             projectId: data._id,
             projetTeamData: data.projectTeamData,
+            projectTasks: data.projectTaskData,
         };
+
+        console.log(project);
 
         setProject(project);
     };

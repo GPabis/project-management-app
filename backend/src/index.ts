@@ -5,6 +5,7 @@ import createProjectRouter from './routes/create-project';
 import yourProjectsRouter from './routes/projects';
 import projectRouter from './routes/project/project';
 import teammateRouter from './routes/project/teammate';
+import taskRouter from './routes/project/task';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import connect from './middleware/database';
@@ -28,6 +29,8 @@ app.use(yourProjectsRouter);
 app.use(projectRouter);
 
 app.use(teammateRouter);
+
+app.use(taskRouter);
 
 const PORT = 8080;
 

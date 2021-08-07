@@ -55,6 +55,11 @@ export const validateDate = (input: string): validateValue => {
     return { isValid: true, errorMsg: '' };
 };
 
+export const validateID = (input: string): validateValue => {
+    if (typeof input !== 'string') return { isValid: false, errorMsg: 'Wrong user ID. Please reload page.' };
+    return { isValid: true, errorMsg: '' };
+};
+
 export const getServerErrorResponse = async (response: Response) => {
     const error = await response.json();
     if (error.errorMessage) {

@@ -22,8 +22,9 @@ const projectSchema = new Schema<ProjectModel>({
             taskName: String,
             taskDescription: String,
             taskDateStart: Date,
-            tastDateEnd: Date,
-            teskResponsible: String,
+            taskDateEnd: Date,
+            taskResponsible: String,
+            taskAuthor: String,
             taskStatus: String,
             taskComments: [
                 {

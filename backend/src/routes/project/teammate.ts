@@ -22,7 +22,7 @@ router.put(
 
             const project = await getProjectById(projectID);
 
-            isNotProjectAdmin(project.projectAdmin, user._id);
+            isNotProjectAdmin(project.projectAdmin.toString(), user._id.toString());
 
             const invitedUser = await findUserByEmail(newUserEmail);
 

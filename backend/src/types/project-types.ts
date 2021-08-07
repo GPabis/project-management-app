@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
 export enum TaskStatus {
-    Waiting,
-    InProgress,
-    Review,
-    Test,
-    Done,
+    Waiting = 'WAITING',
+    InProgress = 'IN-PROGRESS',
+    Review = 'IN-REVIEW',
+    Test = 'IN-TEST',
+    Done = 'DONE',
 }
 
 export interface IComment {
@@ -18,8 +18,9 @@ export interface ITask {
     taskName: string;
     taskDescription: string;
     taskDateStart: Date;
-    tastDateEnd: Date;
-    teskResponsible: string;
+    taskDateEnd: Date;
+    taskResponsible: string;
+    taskAuthor: string;
     taskStatus: TaskStatus;
     taskComments: IComment[];
 }
@@ -45,7 +46,20 @@ export interface TeammateData {
     username: string;
 }
 
+export interface IProjectTaskData extends ITask {
+    _id: mongoose.Types.ObjectId;
+}
+
 export interface IProjectData extends ProjectModel {
     _id: mongoose.Types.ObjectId;
+    projectTaskData: IProjectTaskData[];
     projectTeamData?: TeammateData[];
+}
+
+export interface ITaskBody {
+    taskName: string;
+    taskDescription: string;
+    taskDateStart: Date;
+    taskDateEnd: Date;
+    taskResponsible: string;
 }
