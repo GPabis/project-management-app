@@ -14,12 +14,13 @@ export interface IComment {
 }
 
 export interface ITask {
-    taskId: string;
+    _id: string;
     taskName: string;
     taskDescription: string;
     taskDateStart: Date;
-    tastDateEnd: Date;
-    teskResponsible: string;
+    taskDateEnd: Date;
+    taskAuthor: string;
+    taskResponsible: string;
     taskStatus: TaskStatus;
     taskComments: IComment[];
 }

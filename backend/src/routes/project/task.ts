@@ -15,9 +15,6 @@ router.post('/project/:id/task', verifyToken, validate, async (req: Request, res
         const user = await getUserFromToken(req, res);
         const project = await getProjectById(projectID);
         const taskStatus = TaskStatus.Waiting;
-        console.log(project.projectTeam);
-        console.log(user._id);
-        console.log(taskResponsible);
 
         isNotPartOfTeam(project.projectTeam, user._id);
         isNotPartOfTeam(project.projectTeam, taskResponsible);
@@ -28,18 +25,14 @@ router.post('/project/:id/task', verifyToken, validate, async (req: Request, res
             taskDateStart,
             taskDateEnd,
             taskResponsible,
-            taskAuthor: user._id,
+            taskAuthor: user._id.toString(),
             taskStatus,
             taskComments: [],
         };
 
-        console.log(newTask);
-
-        const cos = await Project.findByIdAndUpdate(project._id, {
+        const updatedTask = await Project.findByIdAndUpdate(project._id, {
             projectTask: [...project.projectTask, newTask],
         });
-
-        console.log(cos);
 
         return res.status(200).json({
             error: false,

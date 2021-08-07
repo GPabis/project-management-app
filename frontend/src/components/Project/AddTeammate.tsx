@@ -27,7 +27,6 @@ const AddTeammate = () => {
     useEffect(() => {
         if (id) {
             projectCtx.getProject(id);
-            console.log('test');
         }
     }, []);
 

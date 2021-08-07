@@ -13,6 +13,7 @@ import CreateProject from './components/Dashboard/CreateProject';
 import Notification from './components/Notification';
 import AddTeammate from './components/Project/AddTeammate';
 import AddTask from './components/Project/AddTask';
+import Task from './components/Project/Task';
 
 const App: FC = () => {
     const authCtx = useContext(AuthContext);
@@ -35,16 +36,20 @@ const App: FC = () => {
                         {isLoggedIn ? <Redirect to="/dashboard" /> : <Login />}
                     </Route>
 
+                    <Route path="/dashboard/projects/:id">
+                        {!isLoggedIn ? <Redirect to="/" /> : <SingleProject />}
+                    </Route>
+
+                    <Route path="/dashboard/projects/:id/task/:taskId" exact>
+                        {!isLoggedIn ? <Redirect to="/" /> : <Task />}
+                    </Route>
+
                     <Route path="/dashboard" exact>
                         {!isLoggedIn ? <Redirect to="/" /> : <Dashboard />}
                     </Route>
 
                     <Route path="/dashboard/projects" exact>
                         {!isLoggedIn ? <Redirect to="/" /> : <YourProjects />}
-                    </Route>
-
-                    <Route path="/dashboard/projects/:id" exact>
-                        {!isLoggedIn ? <Redirect to="/" /> : <SingleProject />}
                     </Route>
 
                     <Route path="/dashboard/projects/:id/invite" exact>
