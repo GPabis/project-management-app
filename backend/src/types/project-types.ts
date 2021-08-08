@@ -11,7 +11,6 @@ export enum TaskStatus {
 export interface IComment {
     taskCommentator: string;
     taskCommentContent: string;
-    taskCommentData: Date;
 }
 
 export interface ITask {

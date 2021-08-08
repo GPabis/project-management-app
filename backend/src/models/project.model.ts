@@ -30,7 +30,10 @@ const projectSchema = new Schema<ProjectModel>({
                 {
                     taskCommentator: String,
                     taskCommentContent: String,
-                    taskCommentData: Date,
+                    taskCommentDate: {
+                        type: Date,
+                        default: Date.now,
+                    },
                 },
             ],
         },

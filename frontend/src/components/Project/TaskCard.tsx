@@ -3,7 +3,7 @@ import SecoundaryHeadline from '../util/SecoundaryHeadline';
 import { tertiaryColor } from './../../utils/styleVariables';
 import CommentForm from './CommentForm';
 import UpdateStatusForm from './UpdateStatusForm';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { ITask } from '../../types/project-types';
 import { useState, useEffect, useContext } from 'react';
 import ProjectContext from '../../store/project-context';
@@ -12,6 +12,8 @@ import NotificationContext from '../../store/notification-context';
 import { Submit } from '../util/Form';
 import AuthContext from '../../store/auth-context';
 import Paragraph from '../util/Paragraph';
+import Comment from './Comment';
+import { getServerErrorResponse } from './../../utils/validateForm';
 
 const TaskCardContainer = styled.div`
     min-height: 50rem;
@@ -28,20 +30,7 @@ const TaskCardContainer = styled.div`
     padding: 1rem 5rem;
 `;
 
-const CommentInfoRow = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2rem;
-`;
-
-const CommentInfoText = styled.p`
-    font-size: 1.6rem;
-    margin: 0.2rem 0;
-    min-width: 10rem;
-`;
-
-const TaskText = styled.p<{ center?: boolean }>`
+export const TaskText = styled.p<{ center?: boolean }>`
     text-align: ${({ center }) => (center ? 'center' : 'justify')};
     font-size: 1.4rem;
     margin: 0;
@@ -62,11 +51,12 @@ const ButtonContainer = styled.div`
 `;
 
 const TaskCard = () => {
-    const { taskId } = useParams<{ id: string; taskId: string }>();
+    const { id, taskId } = useParams<{ id: string; taskId: string }>();
     const projectCtx = useContext(ProjectContext);
     const notificationCtx = useContext(NotificationContext);
     const authCtx = useContext(AuthContext);
     const [task, setTask] = useState<ITask | null>(null);
+    const history = useHistory();
 
     useEffect(() => {
         const currentTask = projectCtx.project?.projectTasks.find((task) => task._id === taskId);
@@ -95,7 +85,44 @@ const TaskCard = () => {
             taskResponsible: responsible,
             taskStatus: currentTask.taskStatus,
         });
-    }, []);
+    }, [projectCtx.project]);
+
+    const deleteTaskHandler = async () => {
+        if (!authCtx.token || !authCtx.email) return authCtx.logout();
+
+        const response = await fetch(`http://localhost:8080/project/${id}/task/${taskId}`, {
+            method: 'DELETE',
+            headers: {
+                'x-access-token': authCtx.token,
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const { error, messages } = await getServerErrorResponse(response);
+            notificationCtx.setNotification(error, messages);
+        }
+
+        if (response.ok) {
+            const { error, messages }: { error: boolean; messages: string } = await response.json();
+            notificationCtx.setNotification(error, messages);
+            projectCtx.getProject(id);
+            history.push(`/dashboard/projects/${id}`);
+        }
+    };
+
+    let comments = task?.taskComments ? (
+        task?.taskComments.map((comment) => (
+            <Comment
+                key={comment._id}
+                username={comment.taskCommentator}
+                comment={comment.taskCommentContent}
+                date={comment.taskCommentDate}
+            />
+        ))
+    ) : (
+        <Paragraph>No comments</Paragraph>
+    );
 
     const card = (
         <>
@@ -119,17 +146,13 @@ const TaskCard = () => {
             <TaskText>{task?.taskDescription}</TaskText>
 
             <TaskInfoHeadline>Comments:</TaskInfoHeadline>
-
-            <CommentInfoRow>
-                <CommentInfoText>Gpabis</CommentInfoText> <CommentInfoText>On: 20.10.2021, 12:30</CommentInfoText>
-            </CommentInfoRow>
-            <TaskText>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus, laudantium!</TaskText>
+            {comments}
 
             <CommentForm />
 
             {task?.taskAuthor === authCtx.username && (
                 <ButtonContainer>
-                    <Submit>Delete</Submit>
+                    <Submit onClick={deleteTaskHandler}>Delete</Submit>
                     <Submit>Edit</Submit>
                 </ButtonContainer>
             )}

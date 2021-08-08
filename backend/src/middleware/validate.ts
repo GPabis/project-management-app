@@ -24,6 +24,10 @@ export const inviteUserValidationRules = () => {
     return [body('newUserEmail').trim().isString().isEmail()];
 };
 
+export const addCommentValidationRules = () => {
+    return [body('comment').trim().isString()];
+};
+
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {

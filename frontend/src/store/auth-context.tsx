@@ -6,6 +6,7 @@ import { IAuthContext, IUserData } from '../types/user-types';
 const AuthContext = createContext<IAuthContext>({
     username: '',
     email: '',
+    _id: '',
     token: '',
     isLoggedIn: false,
     login: (token: string, username: string, email: string) => {},
@@ -18,8 +19,9 @@ export const AuthContextProvider: React.FC = ({ children }) => {
     const cookies = new Cookies();
 
     const [token, setToken] = useState<string | null>(cookies.get('project-token') || null);
-    const [username, setUsername] = useState<string | null>(cookies.get('project-username') || null);
-    const [email, setEmail] = useState<string | null>(cookies.get('project-email') || null);
+    const [username, setUsername] = useState<string | null>(null);
+    const [email, setEmail] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
 
     const userIsLoggedIn = !!token;
 
@@ -37,9 +39,10 @@ export const AuthContextProvider: React.FC = ({ children }) => {
                     logoutHandler();
                 }
 
-                const { username, email }: IUserData = await response.json();
+                const { username, email, _id }: IUserData = await response.json();
                 setUsername(username);
                 setEmail(email);
+                setUserId(_id);
             }
         };
         loadUserData();
@@ -71,6 +74,7 @@ export const AuthContextProvider: React.FC = ({ children }) => {
         token: token,
         username,
         email,
+        _id: userId,
         isLoggedIn: userIsLoggedIn,
         login,
         setUsernameHandler,

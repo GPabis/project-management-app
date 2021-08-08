@@ -10,7 +10,7 @@ export interface IComment {
     _id: string;
     taskCommentator: string;
     taskCommentContent: string;
-    taskCommentData: Date;
+    taskCommentDate: Date;
 }
 
 export interface ITask {

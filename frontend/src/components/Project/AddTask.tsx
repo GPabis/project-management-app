@@ -2,7 +2,7 @@ import Container from '../util/Container';
 import { Form, FormField, Label, Input, ErrorLabel, Submit, Textarea, Select, Option } from '../util/Form';
 import useInput from '../../hooks/use-input';
 import SecoundaryHeadline from '../util/SecoundaryHeadline';
-import { useParams } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 import { useEffect, useContext } from 'react';
 import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';
@@ -195,6 +195,9 @@ const AddTask = () => {
                 </FormField>
                 <Submit disabled={!formIsValid}>Submit Task</Submit>
             </Form>
+            <Submit>
+                <NavLink to={`/dashboard/projects/${id}`}>Back to the Project</NavLink>
+            </Submit>
         </Container>
     );
 };

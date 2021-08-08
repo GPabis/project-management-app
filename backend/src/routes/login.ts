@@ -35,8 +35,8 @@ router.post('/login', loginUserValidationRules(), validate, async (req: Request,
 
 router.get('/login', verifyToken, async (req: Request, res: Response) => {
     try {
-        const { email, username } = await getUserFromToken(req, res);
-        res.status(200).json({ email, username });
+        const { email, username, _id } = await getUserFromToken(req, res);
+        res.status(200).json({ email, username, _id });
     } catch (err) {
         await sendErrorResponse(res, err, 500);
     }

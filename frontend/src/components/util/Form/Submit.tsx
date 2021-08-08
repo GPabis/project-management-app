@@ -26,6 +26,10 @@ export const Submit = styled.button`
         color: ${secoundaryColor};
         cursor: default;
     }
+
+    a {
+        padding: 1rem 3.5rem;
+    }
 `;
 
 export default Submit;

@@ -9,6 +9,7 @@ import taskRouter from './routes/project/task';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import connect from './middleware/database';
+import comments from './routes/project/comment';
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.use(projectRouter);
 app.use(teammateRouter);
 
 app.use(taskRouter);
+
+app.use(comments);
 
 const PORT = 8080;
 

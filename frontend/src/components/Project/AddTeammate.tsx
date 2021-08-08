@@ -3,7 +3,7 @@ import { Form, FormField, Label, Input, ErrorLabel, Submit } from '../util/Form'
 import { getServerErrorResponse, validateEmail } from '../../utils/validateForm';
 import useInput from '../../hooks/use-input';
 import SecoundaryHeadline from '../util/SecoundaryHeadline';
-import { useParams } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 import { useEffect, useContext } from 'react';
 import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';
@@ -87,7 +87,9 @@ const AddTeammate = () => {
                 </FormField>
                 <Submit disabled={!formIsValid}>Invite</Submit>
             </Form>
-            <Submit>Create Task</Submit>
+            <Submit>
+                <NavLink to={`/dashboard/projects/${id}`}>Back to the Project</NavLink>
+            </Submit>
         </Container>
     );
 };

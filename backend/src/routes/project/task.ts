@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import verifyToken, { getUserFromToken } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
 import { sendErrorResponse } from '../../middleware/error-handler';
-import { getProjectById, isNotPartOfTeam } from './../../middleware/helpers';
+import { getProjectById, isNotPartOfTeam, isNotTaskAuthorOrAdmin } from './../../middleware/helpers';
 import { ITask, ITaskBody, TaskStatus, IProjectTaskData } from '../../types/project-types';
 import Project from '../../models/project.model';
 
@@ -80,6 +80,30 @@ router.put('/project/:id/task/:taskId/update-status', verifyToken, validate, asy
         return res.status(200).json({
             error: false,
             messages: `Status of "${taskName}" has been updated `,
+        });
+    } catch (error) {
+        return await sendErrorResponse(res, error, 409);
+    }
+});
+
+router.delete('/project/:id/task/:taskId', verifyToken, async (req: Request, res: Response) => {
+    try {
+        const projectID = req.params.id;
+        const taskId = req.params.taskId;
+        const { _id } = await getUserFromToken(req, res);
+        const project = await getProjectById(projectID);
+        const editedTask = await project.projectTask.find((task: IProjectTaskData) => task._id.toString() === taskId);
+
+        isNotPartOfTeam(project.projectTeam, _id);
+        isNotTaskAuthorOrAdmin(editedTask.taskResponsible, _id, project.projectAdmin);
+
+        project.projectTask = project.projectTask.filter((task: IProjectTaskData) => task._id.toString() !== taskId);
+
+        await project.save();
+
+        return res.status(200).json({
+            error: false,
+            messages: `Task was deleted!`,
         });
     } catch (error) {
         return await sendErrorResponse(res, error, 409);

@@ -4,7 +4,13 @@ import Project from '../../models/project.model';
 import { inviteUserValidationRules, validate } from '../../middleware/validate';
 import { findUserByEmail } from './../../middleware/auth';
 import { sendErrorResponse } from '../../middleware/error-handler';
-import { getProjectById, isNotProjectAdmin, isPartOfTeam } from './../../middleware/helpers';
+import {
+    getProjectById,
+    isNotPartOfTeam,
+    isNotProjectAdmin,
+    isPartOfTeam,
+    isProjectAdmin,
+} from './../../middleware/helpers';
 
 const router = express.Router();
 
@@ -41,5 +47,31 @@ router.put(
         }
     },
 );
+
+router.delete('/project/:id/teammate/leave', verifyToken, async (req: Request, res: Response) => {
+    try {
+        const projectID = req.params.id;
+        const user = await getUserFromToken(req, res);
+        const project = await getProjectById(projectID);
+
+        isProjectAdmin(project.projectAdmin, user._id);
+        isNotPartOfTeam(project.projectTeam, user._id);
+
+        const projectTeamAfterUpdate = project.projectTeam.filter(
+            (teammate: string) => teammate.toString() !== user._id.toString(),
+        );
+
+        project.projectTeam = projectTeamAfterUpdate;
+
+        await project.save();
+
+        return res.status(200).json({
+            error: false,
+            messages: `You leaved project "${project.projectName}"`,
+        });
+    } catch (error) {
+        return await sendErrorResponse(res, error, 409);
+    }
+});
 
 export default router;
