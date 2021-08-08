@@ -59,8 +59,6 @@ router.get('/project/:id', verifyToken, async (req: Request, res: Response) => {
             projectTaskData: [...projectTaskData],
         };
 
-        console.log(request);
-
         return res.status(200).json(request);
     } catch (err) {
         return await sendErrorResponse(res, err, 409);

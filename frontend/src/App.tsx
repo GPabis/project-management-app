@@ -36,14 +36,6 @@ const App: FC = () => {
                         {isLoggedIn ? <Redirect to="/dashboard" /> : <Login />}
                     </Route>
 
-                    <Route path="/dashboard/projects/:id">
-                        {!isLoggedIn ? <Redirect to="/" /> : <SingleProject />}
-                    </Route>
-
-                    <Route path="/dashboard/projects/:id/task/:taskId" exact>
-                        {!isLoggedIn ? <Redirect to="/" /> : <Task />}
-                    </Route>
-
                     <Route path="/dashboard" exact>
                         {!isLoggedIn ? <Redirect to="/" /> : <Dashboard />}
                     </Route>
@@ -62,6 +54,14 @@ const App: FC = () => {
 
                     <Route path="/dashboard/create-project" exact>
                         {!isLoggedIn ? <Redirect to="/" /> : <CreateProject />}
+                    </Route>
+
+                    <Route path="/dashboard/projects/:id" exact>
+                        {!isLoggedIn ? <Redirect to="/" /> : <SingleProject />}
+                    </Route>
+
+                    <Route path="/dashboard/projects/:id/task/:taskId" exact>
+                        {!isLoggedIn ? <Redirect to="/" /> : <Task />}
                     </Route>
                 </main>
             </Header>

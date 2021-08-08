@@ -9,6 +9,9 @@ import { useState, useEffect, useContext } from 'react';
 import ProjectContext from '../../store/project-context';
 import moment from 'moment';
 import NotificationContext from '../../store/notification-context';
+import { Submit } from '../util/Form';
+import AuthContext from '../../store/auth-context';
+import Paragraph from '../util/Paragraph';
 
 const TaskCardContainer = styled.div`
     min-height: 50rem;
@@ -52,11 +55,17 @@ export const TaskInfoHeadline = styled.h4`
     font-weight: 900;
 `;
 
+const ButtonContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+`;
+
 const TaskCard = () => {
-    const { id, taskId } = useParams<{ id: string; taskId: string }>();
+    const { taskId } = useParams<{ id: string; taskId: string }>();
     const projectCtx = useContext(ProjectContext);
     const notificationCtx = useContext(NotificationContext);
-
+    const authCtx = useContext(AuthContext);
     const [task, setTask] = useState<ITask | null>(null);
 
     useEffect(() => {
@@ -88,8 +97,8 @@ const TaskCard = () => {
         });
     }, []);
 
-    return (
-        <TaskCardContainer>
+    const card = (
+        <>
             <SecoundaryHeadline>{task?.taskName}</SecoundaryHeadline>
 
             <TaskInfoHeadline>Start:</TaskInfoHeadline>
@@ -117,6 +126,20 @@ const TaskCard = () => {
             <TaskText>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus, laudantium!</TaskText>
 
             <CommentForm />
+
+            {task?.taskAuthor === authCtx.username && (
+                <ButtonContainer>
+                    <Submit>Delete</Submit>
+                    <Submit>Edit</Submit>
+                </ButtonContainer>
+            )}
+        </>
+    );
+
+    return (
+        <TaskCardContainer>
+            {!task && <Paragraph>Loading...</Paragraph>}
+            {task && card}
         </TaskCardContainer>
     );
 };
