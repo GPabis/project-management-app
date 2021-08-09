@@ -1,15 +1,15 @@
 import styled from 'styled-components';
-import useInput from '../../hooks/use-input';
-import { tertiaryColor } from '../../utils/styleVariables';
-import { validateDescription } from '../../utils/validateForm';
-import { ErrorLabel, Submit } from '../util/Form';
-import { TaskInfoHeadline } from './TaskCard';
+import useInput from '../../../../hooks/use-input';
+import { tertiaryColor } from '../../../../utils/styleVariables';
+import { validateDescription } from '../../../../utils/validateForm';
+import { ErrorLabel, Submit } from '../../../util/Form';
+import { TaskInfoHeadline } from '../TaskCard';
 import { useContext } from 'react';
-import AuthContext from '../../store/auth-context';
-import NotificationContext from '../../store/notification-context';
-import ProjectContext from '../../store/project-context';
+import AuthContext from '../../../../store/auth-context';
+import NotificationContext from '../../../../store/notification-context';
+import ProjectContext from '../../../../store/project-context';
 import { useParams } from 'react-router-dom';
-import { getServerErrorResponse } from './../../utils/validateForm';
+import { getServerErrorResponse } from '../../../../utils/validateForm';
 
 const CommentTextarea = styled.textarea`
     height: 8rem;
@@ -38,6 +38,7 @@ const CommentForm = () => {
         hasError: commentInputHasError,
         valueChangeHandler: commentChangedHandler,
         inputBlurHandler: commentBlurHandler,
+        reset: resetComment,
     } = useInput(validateDescription);
 
     const submitCommentHandler = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -65,6 +66,7 @@ const CommentForm = () => {
             const { error, messages }: { error: boolean; messages: string } = await response.json();
             notificationCtx.setNotification(error, messages);
             projectCtx.getProject(id);
+            resetComment();
         }
     };
 

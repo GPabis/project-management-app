@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import TaskCard from './TaskCard';
+import TaskCard from './Task/TaskCard';
 import { createPortal } from 'react-dom';
 import { useHistory, useParams } from 'react-router-dom';
 

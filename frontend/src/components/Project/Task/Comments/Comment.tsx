@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TaskText } from './TaskCard';
+import { TaskText } from '../TaskCard';
 import moment from 'moment';
 
 const CommentInfoRow = styled.div`

@@ -22,6 +22,7 @@ const AddTeammate = () => {
         hasError: emailInputHasError,
         valueChangeHandler: emailChangedHandler,
         inputBlurHandler: emailBlurHandler,
+        reset: resetEmail,
     } = useInput(validateEmail);
 
     useEffect(() => {
@@ -58,6 +59,7 @@ const AddTeammate = () => {
                 const { error, messages }: { error: boolean; messages: string } = await response.json();
                 notificationCtx.setNotification(error, messages);
             }
+            resetEmail();
         } catch (error) {
             await JSON.parse(error);
             notificationCtx.setNotification(true, error.errorMessage);

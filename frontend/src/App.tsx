@@ -15,6 +15,7 @@ import AddTeammate from './components/Project/AddTeammate';
 import AddTask from './components/Project/AddTask';
 import Task from './components/Project/Task';
 import DeleteProject from './components/Project/DeleteProject';
+import EditTask from './components/Project/Task/EditTask';
 
 const App: FC = () => {
     const authCtx = useContext(AuthContext);
@@ -67,6 +68,10 @@ const App: FC = () => {
 
                     <Route path="/dashboard/projects/:id/task/:taskId" exact>
                         {!isLoggedIn ? <Redirect to="/" /> : <Task />}
+                    </Route>
+
+                    <Route path="/dashboard/projects/:id/task/:taskId/edit" exact>
+                        {!isLoggedIn ? <Redirect to="/" /> : <EditTask />}
                     </Route>
                 </main>
             </Header>

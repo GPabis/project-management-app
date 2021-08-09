@@ -1,19 +1,20 @@
 import styled from 'styled-components';
-import SecoundaryHeadline from '../util/SecoundaryHeadline';
-import { tertiaryColor } from './../../utils/styleVariables';
-import CommentForm from './CommentForm';
-import UpdateStatusForm from './UpdateStatusForm';
+import SecoundaryHeadline from '../../util/SecoundaryHeadline';
+import { tertiaryColor } from '../../../utils/styleVariables';
+import CommentForm from './Comments/CommentForm';
+import UpdateStatusForm from '../UpdateStatusForm';
 import { useParams, useHistory } from 'react-router-dom';
-import { ITask } from '../../types/project-types';
+import { ITask } from '../../../types/project-types';
 import { useState, useEffect, useContext } from 'react';
-import ProjectContext from '../../store/project-context';
+import ProjectContext from '../../../store/project-context';
 import moment from 'moment';
-import NotificationContext from '../../store/notification-context';
-import { Submit } from '../util/Form';
-import AuthContext from '../../store/auth-context';
-import Paragraph from '../util/Paragraph';
-import Comment from './Comment';
-import { getServerErrorResponse } from './../../utils/validateForm';
+import NotificationContext from '../../../store/notification-context';
+import { Submit } from '../../util/Form';
+import AuthContext from '../../../store/auth-context';
+import Paragraph from '../../util/Paragraph';
+import DeleteTask from './DeleteTask';
+import Comments from './Comments/Comments';
+import TaskField from './TaskField';
 
 const TaskCardContainer = styled.div`
     min-height: 50rem;
@@ -44,6 +45,29 @@ export const TaskInfoHeadline = styled.h4`
     font-weight: 900;
 `;
 
+const TaskInfo = styled.button`
+    text-align: center;
+    font-size: 1.4rem;
+    margin: 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 1rem;
+    background: none;
+    transition: all 0.3s;
+
+    &:hover {
+        color: ${tertiaryColor};
+    }
+`;
+
+const TaskInfoContainer = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
 const ButtonContainer = styled.div`
     display: flex;
     align-items: center;
@@ -51,12 +75,11 @@ const ButtonContainer = styled.div`
 `;
 
 const TaskCard = () => {
-    const { id, taskId } = useParams<{ id: string; taskId: string }>();
+    const { taskId } = useParams<{ id: string; taskId: string }>();
     const projectCtx = useContext(ProjectContext);
     const notificationCtx = useContext(NotificationContext);
     const authCtx = useContext(AuthContext);
     const [task, setTask] = useState<ITask | null>(null);
-    const history = useHistory();
 
     useEffect(() => {
         const currentTask = projectCtx.project?.projectTasks.find((task) => task._id === taskId);
@@ -87,72 +110,25 @@ const TaskCard = () => {
         });
     }, [projectCtx.project]);
 
-    const deleteTaskHandler = async () => {
-        if (!authCtx.token || !authCtx.email) return authCtx.logout();
-
-        const response = await fetch(`http://localhost:8080/project/${id}/task/${taskId}`, {
-            method: 'DELETE',
-            headers: {
-                'x-access-token': authCtx.token,
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            const { error, messages } = await getServerErrorResponse(response);
-            notificationCtx.setNotification(error, messages);
-        }
-
-        if (response.ok) {
-            const { error, messages }: { error: boolean; messages: string } = await response.json();
-            notificationCtx.setNotification(error, messages);
-            projectCtx.getProject(id);
-            history.push(`/dashboard/projects/${id}`);
-        }
-    };
-
-    let comments = task?.taskComments ? (
-        task?.taskComments.map((comment) => (
-            <Comment
-                key={comment._id}
-                username={comment.taskCommentator}
-                comment={comment.taskCommentContent}
-                date={comment.taskCommentDate}
-            />
-        ))
-    ) : (
-        <Paragraph>No comments</Paragraph>
-    );
-
     const card = (
         <>
             <SecoundaryHeadline>{task?.taskName}</SecoundaryHeadline>
 
-            <TaskInfoHeadline>Start:</TaskInfoHeadline>
-            <TaskText center={true}>{moment(task?.taskDateStart).format('DD.MM.YYYY')}</TaskText>
-
-            <TaskInfoHeadline>Deadline:</TaskInfoHeadline>
-            <TaskText center={true}>{moment(task?.taskDateEnd).format('DD.MM.YYYY')}</TaskText>
-
-            <TaskInfoHeadline>Task author:</TaskInfoHeadline>
-            <TaskText center={true}>{task?.taskAuthor}</TaskText>
-
-            <TaskInfoHeadline>Task responsible:</TaskInfoHeadline>
-            <TaskText center={true}>{task?.taskResponsible}</TaskText>
+            <TaskField value={moment(task?.taskDateStart).format('DD.MM.YYYY')} label="Start:" />
+            <TaskField value={moment(task?.taskDateEnd).format('DD.MM.YYYY')} label="Deadline:" />
+            <TaskField value={task?.taskAuthor} label="Task author:" />
+            <TaskField value={task?.taskResponsible} label="Task responsible:" />
 
             <UpdateStatusForm currentStatus={task?.taskStatus} />
 
             <TaskInfoHeadline>Description:</TaskInfoHeadline>
             <TaskText>{task?.taskDescription}</TaskText>
 
-            <TaskInfoHeadline>Comments:</TaskInfoHeadline>
-            {comments}
-
-            <CommentForm />
+            <Comments task={task} />
 
             {task?.taskAuthor === authCtx.username && (
                 <ButtonContainer>
-                    <Submit onClick={deleteTaskHandler}>Delete</Submit>
+                    <DeleteTask />
                     <Submit>Edit</Submit>
                 </ButtonContainer>
             )}

@@ -1,35 +1,21 @@
-import Container from '../util/Container';
-import { Form, FormField, Label, Input, ErrorLabel, Submit, Textarea, Select, Option } from '../util/Form';
-import useInput from '../../hooks/use-input';
-import SecoundaryHeadline from '../util/SecoundaryHeadline';
+import Container from '../../util/Container';
+import { Form, FormField, Label, Input, ErrorLabel, Submit, Textarea, Select, Option } from '../../util/Form';
+import useInput from '../../../hooks/use-input';
+import SecoundaryHeadline from '../../util/SecoundaryHeadline';
 import { useParams, NavLink } from 'react-router-dom';
 import { useEffect, useContext } from 'react';
-import AuthContext from '../../store/auth-context';
-import NotificationContext from '../../store/notification-context';
-import ProjectContext from '../../store/project-context';
-import {
-    validateDescription,
-    validateTitle,
-    validateDate,
-    getServerErrorResponse,
-    validateID,
-} from './../../utils/validateForm';
+import AuthContext from '../../../store/auth-context';
+import NotificationContext from '../../../store/notification-context';
+import ProjectContext from '../../../store/project-context';
+import { validateDescription, validateDate, getServerErrorResponse, validateID } from './../../../utils/validateForm';
+import { ITask } from './../../../types/project-types';
+import moment from 'moment';
 
-const AddTask = () => {
-    const { id } = useParams<{ id: string }>();
+const EditTask = () => {
+    const { id, taskId } = useParams<{ id: string; taskId: string }>();
     const projectCtx = useContext(ProjectContext);
     const authCtx = useContext(AuthContext);
     const notificationCtx = useContext(NotificationContext);
-
-    const {
-        value: enteredTitle,
-        isValid: enteredTitleIsValid,
-        errorMessage: titleErrorMsg,
-        hasError: titleInputHasError,
-        valueChangeHandler: titleChangedHandler,
-        inputBlurHandler: titleBlurHandler,
-        reset: titleReset,
-    } = useInput(validateTitle);
 
     const {
         value: enteredDescription,
@@ -39,6 +25,7 @@ const AddTask = () => {
         valueChangeHandler: descriptionChangedHandler,
         inputBlurHandler: descriptionBlurHandler,
         reset: descriptionReset,
+        setDefault: setDefaultDescription,
     } = useInput(validateDescription);
 
     const {
@@ -49,6 +36,7 @@ const AddTask = () => {
         valueChangeHandler: dateStartChangedHandler,
         inputBlurHandler: dateStartBlurHandler,
         reset: dateReset,
+        setDefault: setDefaultDateStart,
     } = useInput(validateDate);
 
     const {
@@ -59,6 +47,7 @@ const AddTask = () => {
         valueChangeHandler: deadlineChangedHandler,
         inputBlurHandler: deadlineBlurHandler,
         reset: deadlineReset,
+        setDefault: setDefaultDeadline,
     } = useInput(validateDate);
 
     const {
@@ -69,13 +58,21 @@ const AddTask = () => {
         valueChangeHandler: taskResponsibleChangedHandler,
         inputBlurHandler: taskResponsibleBlurHandler,
         reset: responsibleReset,
+        setDefault: setDefaultResponsible,
     } = useInput(validateID);
 
     useEffect(() => {
-        if (id) {
+        if (id && (!projectCtx.project || projectCtx.project?.projectId !== id)) {
             projectCtx.getProject(id);
         }
-    }, []);
+        const task = projectCtx.project?.projectTasks.find((task: ITask) => task._id.toString() === taskId);
+        const dateStart = task?.taskDateStart ? moment(task?.taskDateStart).valueOf() : '';
+        const dateEnd = task?.taskDateStart ? moment(task?.taskDateEnd).valueOf() : '';
+        setDefaultDescription(task?.taskDescription || '');
+        setDefaultDateStart(new Date(dateStart) || '');
+        setDefaultDeadline(new Date(dateEnd) || '');
+        setDefaultResponsible(task?.taskResponsible || '');
+    }, [projectCtx.project]);
 
     const submitTaskHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -83,47 +80,46 @@ const AddTask = () => {
         if (!authCtx.token || !authCtx.email) return authCtx.logout();
 
         const formBody = {
-            taskName: enteredTitle,
             taskDescription: enteredDescription,
             taskDateStart: enteredDateStart,
             taskDateEnd: enteredDeadline,
             taskResponsible: enteredTaskResponsible,
         };
 
-        try {
-            const response = await fetch(`http://localhost:8080/project/${id}/task`, {
-                method: 'POST',
-                headers: {
-                    'x-access-token': authCtx.token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formBody),
-            });
+        console.log(formBody);
 
-            if (!response.ok) {
-                const { error, messages } = await getServerErrorResponse(response);
-                notificationCtx.setNotification(error, messages);
-            }
+        // try {
+        //     const response = await fetch(`http://localhost:8080/project/${id}/task/${taskId}/edit`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'x-access-token': authCtx.token,
+        //             'Content-Type': 'application/json',
+        //         },
+        //         body: JSON.stringify(formBody),
+        //     });
 
-            if (response.ok) {
-                const { error, messages }: { error: boolean; messages: string } = await response.json();
-                notificationCtx.setNotification(error, messages);
-                projectCtx.getProject(id);
-                titleReset();
-                descriptionReset();
-                dateReset();
-                deadlineReset();
-                responsibleReset();
-            }
-        } catch (error) {
-            notificationCtx.setNotification(true, error.errorMessage);
-        }
+        //     if (!response.ok) {
+        //         const { error, messages } = await getServerErrorResponse(response);
+        //         notificationCtx.setNotification(error, messages);
+        //     }
+
+        //     if (response.ok) {
+        //         const { error, messages }: { error: boolean; messages: string } = await response.json();
+        //         notificationCtx.setNotification(error, messages);
+        //         projectCtx.getProject(id);
+        //         descriptionReset();
+        //         dateReset();
+        //         deadlineReset();
+        //         responsibleReset();
+        //     }
+        // } catch (error) {
+        //     notificationCtx.setNotification(true, error.errorMessage);
+        // }
     };
 
     let formIsValid = false;
 
     if (
-        enteredTitleIsValid &&
         enteredDescriptionIsValid &&
         enteredDateStartIsValid &&
         enteredDeadlineIsValid &&
@@ -144,19 +140,8 @@ const AddTask = () => {
 
     return (
         <Container center={true}>
-            <SecoundaryHeadline>Add task to project "{projectCtx.project?.projectName}"</SecoundaryHeadline>
+            <SecoundaryHeadline>Edit task "{projectCtx.project?.projectName}"</SecoundaryHeadline>
             <Form onSubmit={submitTaskHandler}>
-                <FormField>
-                    <Label>Task Title: </Label>
-                    <Input
-                        type="text"
-                        id="taskTitle"
-                        onChange={titleChangedHandler}
-                        onBlur={titleBlurHandler}
-                        value={enteredTitle}
-                    />
-                    {titleInputHasError && <ErrorLabel>{titleErrorMsg}</ErrorLabel>}
-                </FormField>
                 <FormField>
                     <Label>Task Description: </Label>
                     <Textarea
@@ -174,7 +159,7 @@ const AddTask = () => {
                         id="taskDateStart"
                         onChange={dateStartChangedHandler}
                         onBlur={dateStartBlurHandler}
-                        value={enteredDateStart}
+                        value={moment(enteredDateStart).format('YYYY-MM-DD')}
                     />
                     {dateStartInputHasError && <ErrorLabel>{dateStartErrorMsg}</ErrorLabel>}
                 </FormField>
@@ -185,7 +170,7 @@ const AddTask = () => {
                         id="taskDateDeadline"
                         onChange={deadlineChangedHandler}
                         onBlur={deadlineBlurHandler}
-                        value={enteredDeadline}
+                        value={moment(enteredDeadline).format('YYYY-MM-DD')}
                     />
                     {deadlineInputHasError && <ErrorLabel>{deadlineErrorMsg}</ErrorLabel>}
                 </FormField>
@@ -212,4 +197,4 @@ const AddTask = () => {
     );
 };
 
-export default AddTask;
+export default EditTask;

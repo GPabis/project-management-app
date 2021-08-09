@@ -8,7 +8,7 @@ import { secoundaryColor, tertiaryColor } from '../../utils/styleVariables';
 import TaskListCard from './TaskListCard';
 import moment from 'moment';
 import { createPortal } from 'react-dom';
-import TaskCard from './TaskCard';
+import TaskCard from './Task/TaskCard';
 import Paragraph from '../util/Paragraph';
 import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';

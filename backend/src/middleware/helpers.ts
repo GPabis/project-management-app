@@ -23,6 +23,6 @@ export const isNotPartOfTeam = (teamIDs: string[], userId: string) => {
 };
 
 export const isNotTaskAuthorOrAdmin = (taskAuthor: string, userId: string, projectAdminId: string) => {
-    if (taskAuthor !== userId && projectAdminId !== userId)
+    if (taskAuthor.toString() !== userId.toString() && projectAdminId.toString() !== userId.toString())
         throw `Only task author or project admin can delete this task!`;
 };

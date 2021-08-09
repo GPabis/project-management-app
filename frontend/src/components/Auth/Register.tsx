@@ -17,6 +17,7 @@ const Register = () => {
         hasError: usernameInputHasError,
         valueChangeHandler: usernameChangedHandler,
         inputBlurHandler: usernameBlurHandler,
+        reset: usernameReset,
     } = useInput(validateUsername);
 
     const {
@@ -26,6 +27,7 @@ const Register = () => {
         hasError: emailInputHasError,
         valueChangeHandler: emailChangedHandler,
         inputBlurHandler: emailBlurHandler,
+        reset: emailReset,
     } = useInput(validateEmail);
 
     const {
@@ -35,6 +37,7 @@ const Register = () => {
         hasError: passwordInputHasError,
         valueChangeHandler: passwordChangedHandler,
         inputBlurHandler: passwordBlurHandler,
+        reset: passwordReset,
     } = useInput(validatePassword);
 
     let formIsValid = false;
@@ -67,6 +70,9 @@ const Register = () => {
 
             if (response.ok) {
                 notificationCtx.setNotification(false, 'You created account. You can login now!');
+                usernameReset();
+                passwordReset();
+                emailReset();
                 history.push('/login');
             }
         } catch (error) {

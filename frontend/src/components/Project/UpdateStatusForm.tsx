@@ -1,5 +1,5 @@
 import { Select, Option } from '../util/Form';
-import { TaskInfoHeadline } from './TaskCard';
+import { TaskInfoHeadline } from './Task/TaskCard';
 import { FC, useContext } from 'react';
 import { TaskStatus } from '../../types/project-types';
 import AuthContext from '../../store/auth-context';

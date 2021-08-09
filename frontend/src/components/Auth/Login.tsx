@@ -19,6 +19,7 @@ const Login = () => {
         hasError: emailInputHasError,
         valueChangeHandler: emailChangedHandler,
         inputBlurHandler: emailBlurHandler,
+        reset: emailReset,
     } = useInput(validateEmail);
 
     const {
@@ -28,6 +29,7 @@ const Login = () => {
         hasError: passwordInputHasError,
         valueChangeHandler: passwordChangedHandler,
         inputBlurHandler: passwordBlurHandler,
+        reset: passwordReset,
     } = useInput(validatePassword);
 
     let formIsValid = false;
@@ -63,6 +65,8 @@ const Login = () => {
                 authCtx.setEmailHandler(email);
                 authCtx.setUsernameHandler(username);
                 authCtx.login(token, username, email);
+                emailReset();
+                passwordReset();
                 history.push('/dashboard');
             }
         } catch (error) {

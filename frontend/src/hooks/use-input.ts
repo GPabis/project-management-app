@@ -34,6 +34,15 @@ const useInput = (validateValue: (enteredValue: string) => validateValue) => {
         setIsTouched(true);
     };
 
+    const reset = () => {
+        setEnteredValue('');
+        setIsTouched(false);
+    };
+
+    const setDefault = (value: string | Date) => {
+        setEnteredValue(value.toString());
+    };
+
     return {
         value: enteredValue,
         isValid: valueIsValid,
@@ -41,6 +50,8 @@ const useInput = (validateValue: (enteredValue: string) => validateValue) => {
         hasError,
         valueChangeHandler,
         inputBlurHandler,
+        reset,
+        setDefault,
     };
 };
 
