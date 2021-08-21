@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { body, validationResult, ValidationError, Result } from 'express-validator';
+import { sendErrorResponse } from './error-handler';
 
 export const registerUserValidationRules = () => {
     return [
@@ -33,5 +34,15 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
     if (errors.isEmpty()) {
         return next();
     }
-    return res.status(400).json({ error: true, messages: errors.array() });
+    const errorMsg = errors.array().map((error) => `${error.param}: ${error.msg}`);
+    return sendErrorResponse(res, errorMsg.toString(), 409);
+};
+
+export const editTaskValidationRules = () => {
+    return [
+        body('taskDescription').trim().isString().isLength({ min: 5, max: 500 }),
+        body('taskDateStart').toDate(),
+        body('taskDateEnd').toDate(),
+        body('taskResponsible').trim().isString(),
+    ];
 };

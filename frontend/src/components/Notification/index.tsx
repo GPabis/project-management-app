@@ -22,7 +22,7 @@ const Notification: React.FC = () => {
                 clearTimeout(showNotification);
             };
         }
-    });
+    }, [notificationCtx]);
 
     return (
         <NotificationContainer error={notificationCtx.error} visible={visible}>

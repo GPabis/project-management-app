@@ -19,7 +19,7 @@ const DeleteProject = () => {
         if (id) {
             projectCtx.getProject(id);
         }
-    }, []);
+    }, [id, projectCtx]);
 
     const deleteProjectHandler = async () => {
         if (!authCtx.token || !authCtx.email) return authCtx.logout();

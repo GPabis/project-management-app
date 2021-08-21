@@ -11,15 +11,12 @@ const ProjectContext = createContext<IProjectCoxtext>({
 
 export const ProjectContextProvider: React.FC = ({ children }) => {
     const [project, setProject] = useState<IProject | null>(null);
-    const [id, setId] = useState<string | null>(null);
 
     const notificationCtx = useContext(NotificationContext);
     const authCtx = useContext(AuthContext);
     const history = useHistory();
 
     const getProject = async (id: string) => {
-        setId(id);
-
         if (!authCtx.token) {
             notificationCtx.setNotification(true, 'You are not logged in. Please log in again');
             authCtx.logout();
@@ -48,8 +45,6 @@ export const ProjectContextProvider: React.FC = ({ children }) => {
             projetTeamData: data.projectTeamData,
             projectTasks: data.projectTaskData,
         };
-
-        console.log(project);
 
         setProject(project);
     };

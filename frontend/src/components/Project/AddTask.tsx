@@ -75,7 +75,7 @@ const AddTask = () => {
         if (id) {
             projectCtx.getProject(id);
         }
-    }, []);
+    }, [id, projectCtx]);
 
     const submitTaskHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

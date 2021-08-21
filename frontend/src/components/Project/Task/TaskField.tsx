@@ -1,6 +1,5 @@
 import { TaskInfoHeadline } from './TaskCard';
 import styled from 'styled-components';
-import { tertiaryColor } from '../../../utils/styleVariables';
 
 const TaskInfo = styled.span`
     text-align: center;

@@ -31,7 +31,6 @@ export const validateEmail = (input: string): validateValue => {
 export const validatePassword = (input: string): validateValue => {
     if (!validateLength(input, 30))
         return { isValid: false, errorMsg: 'Password lenght should be between 5 and 30 letters' };
-
     return { isValid: true, errorMsg: '' };
 };
 
@@ -49,7 +48,7 @@ export const validateDescription = (input: string): validateValue => {
 
 export const validateDate = (input: string): validateValue => {
     const re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
-    if (input == '' && !input.match(re)) return { isValid: false, errorMsg: 'Invalid date' };
+    if (input === '' && !input.match(re)) return { isValid: false, errorMsg: 'Invalid date' };
     if (new Date() >= new Date(input))
         return { isValid: false, errorMsg: 'You cannot set date before task was created' };
     return { isValid: true, errorMsg: '' };

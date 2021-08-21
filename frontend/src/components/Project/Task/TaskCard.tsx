@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import SecoundaryHeadline from '../../util/SecoundaryHeadline';
 import { tertiaryColor } from '../../../utils/styleVariables';
-import CommentForm from './Comments/CommentForm';
 import UpdateStatusForm from '../UpdateStatusForm';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, NavLink } from 'react-router-dom';
 import { ITask } from '../../../types/project-types';
 import { useState, useEffect, useContext } from 'react';
 import ProjectContext from '../../../store/project-context';
@@ -45,29 +44,6 @@ export const TaskInfoHeadline = styled.h4`
     font-weight: 900;
 `;
 
-const TaskInfo = styled.button`
-    text-align: center;
-    font-size: 1.4rem;
-    margin: 0;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    font-weight: 600;
-    margin-top: 1rem;
-    background: none;
-    transition: all 0.3s;
-
-    &:hover {
-        color: ${tertiaryColor};
-    }
-`;
-
-const TaskInfoContainer = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
 const ButtonContainer = styled.div`
     display: flex;
     align-items: center;
@@ -75,7 +51,7 @@ const ButtonContainer = styled.div`
 `;
 
 const TaskCard = () => {
-    const { taskId } = useParams<{ id: string; taskId: string }>();
+    const { id, taskId } = useParams<{ id: string; taskId: string }>();
     const projectCtx = useContext(ProjectContext);
     const notificationCtx = useContext(NotificationContext);
     const authCtx = useContext(AuthContext);
@@ -108,7 +84,7 @@ const TaskCard = () => {
             taskResponsible: responsible,
             taskStatus: currentTask.taskStatus,
         });
-    }, [projectCtx.project]);
+    }, [projectCtx.project, taskId, notificationCtx]);
 
     const card = (
         <>
@@ -129,7 +105,9 @@ const TaskCard = () => {
             {task?.taskAuthor === authCtx.username && (
                 <ButtonContainer>
                     <DeleteTask />
-                    <Submit>Edit</Submit>
+                    <Submit>
+                        <NavLink to={`/dashboard/projects/${id}/task/${taskId}/edit`}>Edit</NavLink>
+                    </Submit>
                 </ButtonContainer>
             )}
         </>

@@ -29,7 +29,7 @@ const AddTeammate = () => {
         if (id) {
             projectCtx.getProject(id);
         }
-    }, []);
+    }, [id, projectCtx]);
 
     const addUserToProjectHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

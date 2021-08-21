@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import verifyToken, { getUserFromToken } from '../../middleware/auth';
-import { validate } from '../../middleware/validate';
+import { validate, editTaskValidationRules } from '../../middleware/validate';
 import { sendErrorResponse } from '../../middleware/error-handler';
 import { getProjectById, isNotPartOfTeam, isNotTaskAuthorOrAdmin } from './../../middleware/helpers';
 import { ITask, ITaskBody, TaskStatus, IProjectTaskData } from '../../types/project-types';
@@ -85,6 +85,58 @@ router.put('/project/:id/task/:taskId/update-status', verifyToken, validate, asy
         return await sendErrorResponse(res, error, 409);
     }
 });
+
+router.put(
+    '/project/:id/task/:taskId/edit',
+    verifyToken,
+    editTaskValidationRules(),
+    validate,
+    async (req: Request, res: Response) => {
+        try {
+            const projectID = req.params.id;
+            const taskId = req.params.taskId;
+            const { _id } = await getUserFromToken(req, res);
+            const project = await getProjectById(projectID);
+            const editedTask = await project.projectTask.find(
+                (task: IProjectTaskData) => task._id.toString() === taskId,
+            );
+            isNotPartOfTeam(project.projectTeam, _id);
+            isNotTaskAuthorOrAdmin(editedTask.taskResponsible, _id, project.projectAdmin);
+
+            const {
+                taskDescription,
+                taskDateStart,
+                taskDateEnd,
+                taskResponsible,
+            }: { taskDescription: string; taskDateStart: Date; taskDateEnd: Date; taskResponsible: string } = req.body;
+
+            project.projectTask = project.projectTask.map((task: IProjectTaskData) => {
+                if (task._id.toString() !== taskId) return task;
+                else
+                    return {
+                        _id: task._id,
+                        taskName: task.taskName,
+                        taskDescription,
+                        taskDateStart,
+                        taskDateEnd,
+                        taskResponsible,
+                        taskAuthor: task.taskAuthor,
+                        taskStatus: task.taskStatus,
+                        taskComments: [...task.taskComments],
+                    };
+            });
+
+            await project.save();
+
+            return res.status(200).json({
+                error: false,
+                messages: `Task was edited!`,
+            });
+        } catch (error) {
+            return await sendErrorResponse(res, error, 409);
+        }
+    },
+);
 
 router.delete('/project/:id/task/:taskId', verifyToken, async (req: Request, res: Response) => {
     try {

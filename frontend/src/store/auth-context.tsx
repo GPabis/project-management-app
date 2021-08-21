@@ -46,9 +46,9 @@ export const AuthContextProvider: React.FC = ({ children }) => {
             }
         };
         loadUserData();
-    }, []);
+    }, [token, userIsLoggedIn]);
 
-    const login = (token: string, username: string, email: string) => {
+    const login = (token: string) => {
         const dateNow = new Date();
         const expires = new Date(new Date(dateNow).setHours(dateNow.getHours() + 2));
         cookies.set('project-token', token, { path: '/', expires: expires });

@@ -7,8 +7,6 @@ import styled from 'styled-components';
 import { secoundaryColor, tertiaryColor } from '../../utils/styleVariables';
 import TaskListCard from './TaskListCard';
 import moment from 'moment';
-import { createPortal } from 'react-dom';
-import TaskCard from './Task/TaskCard';
 import Paragraph from '../util/Paragraph';
 import AuthContext from '../../store/auth-context';
 import NotificationContext from '../../store/notification-context';
@@ -96,7 +94,7 @@ const SingleProject = () => {
         if (id && (!projectCtx.project || id !== projectCtx.project?.projectId)) {
             projectCtx.getProject(id);
         }
-    }, [projectCtx.project]);
+    }, [projectCtx, id]);
 
     const statuses = ['WAITING', 'IN-PROGRESS', 'IN-REVIEW', 'IN-TEST', 'DONE'];
 

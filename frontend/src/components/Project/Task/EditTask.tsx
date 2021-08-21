@@ -2,7 +2,7 @@ import Container from '../../util/Container';
 import { Form, FormField, Label, Input, ErrorLabel, Submit, Textarea, Select, Option } from '../../util/Form';
 import useInput from '../../../hooks/use-input';
 import SecoundaryHeadline from '../../util/SecoundaryHeadline';
-import { useParams, NavLink } from 'react-router-dom';
+import { useParams, NavLink, useHistory } from 'react-router-dom';
 import { useEffect, useContext } from 'react';
 import AuthContext from '../../../store/auth-context';
 import NotificationContext from '../../../store/notification-context';
@@ -16,6 +16,7 @@ const EditTask = () => {
     const projectCtx = useContext(ProjectContext);
     const authCtx = useContext(AuthContext);
     const notificationCtx = useContext(NotificationContext);
+    const history = useHistory();
 
     const {
         value: enteredDescription,
@@ -24,7 +25,6 @@ const EditTask = () => {
         hasError: descriptionInputHasError,
         valueChangeHandler: descriptionChangedHandler,
         inputBlurHandler: descriptionBlurHandler,
-        reset: descriptionReset,
         setDefault: setDefaultDescription,
     } = useInput(validateDescription);
 
@@ -35,7 +35,6 @@ const EditTask = () => {
         hasError: dateStartInputHasError,
         valueChangeHandler: dateStartChangedHandler,
         inputBlurHandler: dateStartBlurHandler,
-        reset: dateReset,
         setDefault: setDefaultDateStart,
     } = useInput(validateDate);
 
@@ -46,7 +45,6 @@ const EditTask = () => {
         hasError: deadlineInputHasError,
         valueChangeHandler: deadlineChangedHandler,
         inputBlurHandler: deadlineBlurHandler,
-        reset: deadlineReset,
         setDefault: setDefaultDeadline,
     } = useInput(validateDate);
 
@@ -57,7 +55,6 @@ const EditTask = () => {
         hasError: taskResponsibleInputHasError,
         valueChangeHandler: taskResponsibleChangedHandler,
         inputBlurHandler: taskResponsibleBlurHandler,
-        reset: responsibleReset,
         setDefault: setDefaultResponsible,
     } = useInput(validateID);
 
@@ -72,7 +69,7 @@ const EditTask = () => {
         setDefaultDateStart(new Date(dateStart) || '');
         setDefaultDeadline(new Date(dateEnd) || '');
         setDefaultResponsible(task?.taskResponsible || '');
-    }, [projectCtx.project]);
+    }, [projectCtx, id, taskId]);
 
     const submitTaskHandler = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -81,40 +78,39 @@ const EditTask = () => {
 
         const formBody = {
             taskDescription: enteredDescription,
-            taskDateStart: enteredDateStart,
-            taskDateEnd: enteredDeadline,
+            taskDateStart: new Date(enteredDateStart),
+            taskDateEnd: new Date(enteredDeadline),
             taskResponsible: enteredTaskResponsible,
         };
 
-        console.log(formBody);
+        try {
+            const response = await fetch(`http://localhost:8080/project/${id}/task/${taskId}/edit`, {
+                method: 'PUT',
+                headers: {
+                    'x-access-token': authCtx.token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formBody),
+            });
 
-        // try {
-        //     const response = await fetch(`http://localhost:8080/project/${id}/task/${taskId}/edit`, {
-        //         method: 'POST',
-        //         headers: {
-        //             'x-access-token': authCtx.token,
-        //             'Content-Type': 'application/json',
-        //         },
-        //         body: JSON.stringify(formBody),
-        //     });
+            if (!response.ok) {
+                const { error, messages } = await getServerErrorResponse(response);
+                notificationCtx.setNotification(error, messages);
+            }
 
-        //     if (!response.ok) {
-        //         const { error, messages } = await getServerErrorResponse(response);
-        //         notificationCtx.setNotification(error, messages);
-        //     }
-
-        //     if (response.ok) {
-        //         const { error, messages }: { error: boolean; messages: string } = await response.json();
-        //         notificationCtx.setNotification(error, messages);
-        //         projectCtx.getProject(id);
-        //         descriptionReset();
-        //         dateReset();
-        //         deadlineReset();
-        //         responsibleReset();
-        //     }
-        // } catch (error) {
-        //     notificationCtx.setNotification(true, error.errorMessage);
-        // }
+            if (response.ok) {
+                const { error, messages }: { error: boolean; messages: string } = await response.json();
+                notificationCtx.setNotification(error, messages);
+                projectCtx.getProject(id);
+                history.push(`/dashboard/projects/${id}`);
+            }
+        } catch (error) {
+            if (error.errorMessage) {
+                notificationCtx.setNotification(true, error.errorMessage);
+            } else {
+                console.log(error);
+            }
+        }
     };
 
     let formIsValid = false;

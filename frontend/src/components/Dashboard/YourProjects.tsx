@@ -9,7 +9,6 @@ import { getServerErrorResponse } from '../../utils/validateForm';
 import Paragraph from '../util/Paragraph';
 import NotificationContext from '../../store/notification-context';
 import { IYourProjects } from '../../types/project-types';
-import { parse } from 'path';
 
 const YourProjects = () => {
     const [projects, setProjects] = useState<IYourProjects[]>([]);
@@ -49,7 +48,7 @@ const YourProjects = () => {
         };
 
         getYourProjects();
-    }, []);
+    }, [authCtx, notificationCtx]);
 
     return (
         <>
